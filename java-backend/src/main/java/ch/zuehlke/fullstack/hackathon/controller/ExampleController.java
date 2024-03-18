@@ -1,54 +1,35 @@
 package ch.zuehlke.fullstack.hackathon.controller;
 
-import ch.zuehlke.fullstack.hackathon.model.ExampleDto;
-import ch.zuehlke.fullstack.hackathon.model.MessageOfTheDayDto;
-import ch.zuehlke.fullstack.hackathon.service.ExampleService;
-import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.NoteAndChordService;
+import ch.zuehlke.fullstack.hackathon.model.PromptInputDto;
+import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongAndChordService;
+import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/example")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ExampleController {
 
-    private final ExampleService exampleService;
-    private final NoteAndChordService noteAndChordService;
+    private final SongAndChordService songAndChordService;
 
-    @Operation(summary = "Example demo DTO",
-            description = "This can be used to enrich swagger documentation")
-    @ApiResponse(responseCode = "200", description = "Successfully returned example")
+    @Operation(summary = "Get OpenApi answer",
+            description = "tbd")
+    @ApiResponse(responseCode = "201", description = "Successfully returned example")
     @ApiResponse(responseCode = "500", description = "Something failed internally")
-    @GetMapping("/")
-    public ResponseEntity<ExampleDto> getExample() {
-        ExampleDto result;
+    @PostMapping("/song")
+    public ResponseEntity<SongtextAndChordsDto> getMessageOfTheDayExample(@RequestBody final PromptInputDto promptInputDto) {
+
         try {
-            result = this.exampleService.getExampleDto();
+            var response = songAndChordService.generateNotesAndChordsFromInput(promptInputDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception exception) {
+
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @Operation(summary = "Example message of the day DTO",
-            description = "This can be used to enrich swagger documentation")
-    @ApiResponse(responseCode = "200", description = "Successfully returned example")
-    @ApiResponse(responseCode = "500", description = "Something failed internally")
-    @GetMapping("/motd")
-    public ResponseEntity<MessageOfTheDayDto> getMessageOfTheDayExample() {
-        MessageOfTheDayDto result;
-        try {
-//            result = this.exampleService.getMessageOfTheDayDto();
-        } catch (Exception exception) {
-//            log.error("Message of the day could not be fetched", exception);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return null;
     }
 }

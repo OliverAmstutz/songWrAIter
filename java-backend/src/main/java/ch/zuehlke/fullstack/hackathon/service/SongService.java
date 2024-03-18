@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 public class SongService {
 
-    private Map<UUID, Song> songs = new HashMap<>();
+    private final Map<UUID, Song> songs = new HashMap<>();
 
     public List<Song> getAllSongs() {
         return songs

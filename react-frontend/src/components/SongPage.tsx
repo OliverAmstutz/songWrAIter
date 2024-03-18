@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import CreateSongForm from "./CreateSongForm.tsx";
+import SongList from "./SongList.tsx";
 
 const Section = styled.div`
     display: flex;
@@ -11,6 +12,7 @@ export default function SongPage() {
     return (
         <Section>
             <CreateSongForm/>
+            <SongList/>
         </Section>
     );
 }

@@ -5,8 +5,6 @@ import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/song")
-@RequiredArgsConstructor
 public class SongController {
-    
-    private SongService service;
 
-    @Autowired
+    private final SongService service;
+
     public SongController(SongService service) {
         this.service = service;
     }

@@ -6,7 +6,7 @@ const Section = styled.div`
   align-items: center;
 `;
 
-export default function OtherPage() {
+export default function SongPage() {
     return (
         <Section>
             <h1>Hello from the other Side</h1>

@@ -7,7 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import ErrorBoundary from './error/ErrorBoundary';
 import ErrorPage from './error/ErrorPage';
 import MainPage from './components/MainPage.tsx';
-import OtherPage from './components/OtherPage.tsx';
+import SongPage from './components/SongPage.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <ErrorBoundary>
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
-                    <Route path="/other" element={<OtherPage/>}/>
+                    <Route path="/other" element={<SongPage/>}/>
                     <Route path="*" element={<ErrorPage statusCode={400} errorMessage={'Page not found'}/>}/>
                 </Routes>
             </ErrorBoundary>

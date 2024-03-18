@@ -1,5 +1,7 @@
 import {SubmitHandler, useForm} from "react-hook-form"
 import remoteService from "../services/RemoteService.tsx";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+
 
 interface IFormInput {
     topic: string
@@ -17,10 +19,25 @@ export default function CreateSongForm() {
             mood: '',
         },
     })
-    const onSubmit: SubmitHandler<IFormInput> = (data) => remoteService.post("/song", {
-        ...data,
-        instruments: [data.instruments]
+
+    const queryClient = useQueryClient()
+
+    function submitForm(data: IFormInput) {
+        return remoteService.post("/song", {
+            ...data,
+            instruments: [data.instruments]
+        });
+    }
+
+    const mutation = useMutation({
+        mutationFn: submitForm,
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries({queryKey: ['songs']})
+        },
     })
+
+    const onSubmit: SubmitHandler<IFormInput> = (data) => mutation.mutate(data)
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,4 +67,5 @@ export default function CreateSongForm() {
 
             <input type="submit"/>
         </form>)
+
 }

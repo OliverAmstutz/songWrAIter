@@ -1,7 +1,9 @@
 package ch.zuehlke.fullstack.hackathon.controller;
 
 import ch.zuehlke.fullstack.hackathon.model.ExampleDto;
+import ch.zuehlke.fullstack.hackathon.model.MessageOfTheDayDto;
 import ch.zuehlke.fullstack.hackathon.service.ExampleService;
+import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.NoteAndChordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExampleController {
 
     private final ExampleService exampleService;
+    private final NoteAndChordService noteAndChordService;
 
     @Operation(summary = "Example demo DTO",
             description = "This can be used to enrich swagger documentation")
@@ -31,5 +34,21 @@ public class ExampleController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Example message of the day DTO",
+            description = "This can be used to enrich swagger documentation")
+    @ApiResponse(responseCode = "200", description = "Successfully returned example")
+    @ApiResponse(responseCode = "500", description = "Something failed internally")
+    @GetMapping("/motd")
+    public ResponseEntity<MessageOfTheDayDto> getMessageOfTheDayExample() {
+        MessageOfTheDayDto result;
+        try {
+//            result = this.exampleService.getMessageOfTheDayDto();
+        } catch (Exception exception) {
+//            log.error("Message of the day could not be fetched", exception);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return null;
     }
 }

@@ -1,4 +1,5 @@
 import {SubmitHandler, useForm} from "react-hook-form"
+import remoteService from "../services/RemoteService.tsx";
 
 interface IFormInput {
     topic: string
@@ -16,7 +17,10 @@ export default function CreateSongForm() {
             mood: '',
         },
     })
-    const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data)
+    const onSubmit: SubmitHandler<IFormInput> = (data) => remoteService.post("/song", {
+        ...data,
+        instruments: [data.instruments]
+    })
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

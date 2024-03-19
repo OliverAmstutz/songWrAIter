@@ -35,6 +35,7 @@ public class SongController {
     @PostMapping
     public ResponseEntity<Void> createSong(@RequestBody PromptInputDto createSongDto) {
         SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
+        log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -17,14 +17,11 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class SongAndChordService {
-
-    public static final String ASSISTANT_PROMPT = "Your are a helpful assistant that always answers in a structured json. The first one is 'songtext' it is a String which is a songtext to a song. The second one is 'chords' it is an array of string which are the chords";
 
     @Value("${apiKey}")
     private String apiKey;
@@ -35,7 +32,7 @@ public class SongAndChordService {
 
     public SongtextAndChordsDto generateNotesAndChordsFromInput(final PromptInputDto promptInputDto) {
         final String userPrompt = createPromptFromInput(promptInputDto);
-        System.out.println(userPrompt);
+        log.info("User prompt: {}",userPrompt);
         Optional<SongtextAndChordsDto> openAiResponse = getOpenAiResponse(userPrompt);
         songCache.addNewSong(promptInputDto);
 
@@ -47,7 +44,6 @@ public class SongAndChordService {
     }
 
     private Optional<SongtextAndChordsDto> getOpenAiResponse(final String userPrompt) {
-//        ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(), ASSISTANT_PROMPT);
         ChatMessage promptMessage = new ChatMessage(ChatMessageRole.USER.value(), userPrompt);
         List<ChatMessage> messages = List.of(promptMessage);
         ChatCompletionRequest chatRequest = ChatCompletionRequest.builder()
@@ -56,8 +52,6 @@ public class SongAndChordService {
                 .maxTokens(600)
                 .n(1)
                 .build();
-
-//        getOpenAiService().createChatCompletion(chatRequest).getChoices().
 
         return getOpenAiService().createChatCompletion(chatRequest).getChoices().stream()
                 .findFirst()
@@ -72,13 +66,13 @@ public class SongAndChordService {
             SongtextAndChordsDto songtextAndChordsDto = mapper.readValue(content, SongtextAndChordsDto.class);
             return Optional.of(songtextAndChordsDto);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("message = {}, stacktrace = {}",e.getMessage(), e.getStackTrace());
             return Optional.empty();
         }
     }
 
     public static String createPromptFromInput(final PromptInputDto promptInputDto) {
-        return "Given the following specifications, generate a children song with one verse and its chords and one chorus and its chords. The verse should be about 10 lines, the chours half\n\n"
+        return "Given the following specifications, generate a children song with one verse and its chords and one chorus and its chords. The verse should be about 10 lines, the chorus half\n\n"
                 + "Topic: " + promptInputDto.topic() + "\n"
                 + "The topic represents what the song is about.\n"
                 + "Genre: " + promptInputDto.genre() + "\n"

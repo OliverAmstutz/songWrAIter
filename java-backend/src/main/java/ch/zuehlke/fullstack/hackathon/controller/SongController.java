@@ -9,6 +9,7 @@ import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndC
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,9 +49,14 @@ public class SongController {
 //        var bertId = bertService.generateSongFromChords(songtextAndChordsDto);
 
         String randomBirdId = UUID.randomUUID().toString();
-        var song = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood(), randomBirdId, null);
-        songCache.addNewSong(song);
+
+        songCache.addNewSong(mapSong(createSongDto, randomBirdId, songtextAndChordsDto));
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @NotNull
+    private static Song mapSong(final PromptInputDto createSongDto, final String randomBirdId, final SongtextAndChordsDto songtextAndChordsDto) {
+        return new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood(), randomBirdId, songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext(), null);
     }
 
     @Operation(summary = "Get all songs",

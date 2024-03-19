@@ -8,6 +8,8 @@ export interface Song {
     genre: string
     instruments: string[]
     mood: string
+    generatedVerseText?: string
+    generatedChorusText?: string
     urls: SongUrls
 }
 
@@ -20,7 +22,8 @@ export interface SongUrls {
 export default function SongList() {
     const query = useQuery({
         queryKey: ['songs'],
-        queryFn: () => remoteService.get<Song[]>("/song")
+        queryFn: () => remoteService.get<Song[]>("/song"),
+        refetchInterval: 3000
     })
 
     function renderSongs() {

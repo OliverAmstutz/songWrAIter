@@ -10,10 +10,12 @@ public record Song(
         List<String> instruments,
         String mood,
         String bertId,
+        String generatedVerseText,
+        String generatedChorusText,
         SongUrls urls
 ) {
 
-    public Song(UUID id, String topic, String genre, List<String> instruments, String mood, String bertId) {
-        this(id, topic, genre, instruments, mood, bertId, null);
+    public Song(UUID id, String topic, String genre, List<String> instruments, String mood, String bertId, String generatedVerseText, String generatedChorusText) {
+        this(id, topic, genre, instruments, mood, bertId, generatedVerseText, generatedChorusText, null);
     }
 }

@@ -12,7 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +31,8 @@ public class SongController {
 
     private final SongCache songCache;
 
-    public SongController(SongAndChordService service, BertService bertService, SongCache songCache) {
+    public SongController(SongAndChordService service, BertService bertService,
+                          SongCache songCache) {
         this.service = service;
         this.bertService = bertService;
         this.songCache = songCache;
@@ -40,13 +45,25 @@ public class SongController {
     @PostMapping
     public ResponseEntity<Void> createSong(@RequestBody PromptInputDto createSongDto) {
         log.info("Starting song generation: {}", createSongDto);
-        SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
-        log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
-        var newlyCreatedSong = new Song(UUID.randomUUID(), createSongDto.topic(), Genre.mapGenre(createSongDto.genre()), createSongDto.instruments(), createSongDto.mood(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext());
+        SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(
+                createSongDto);
+        log.info(
+                "Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}",
+                songtextAndChordsDto.chorusSongtext(),
+                songtextAndChordsDto.chorusChords(),
+                songtextAndChordsDto.verseSongtext(),
+                songtextAndChordsDto.verseChords());
+        var newlyCreatedSong = new Song(
+                UUID.randomUUID(),
+                createSongDto.topic(),
+                Genre.mapGenre(createSongDto.genre()),
+                createSongDto.instruments(),
+                createSongDto.mood(),
+                songtextAndChordsDto.verseSongtext(),
+                songtextAndChordsDto.chorusSongtext());
 
         songCache.addNewSong(newlyCreatedSong);
         bertService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -45,9 +45,10 @@ public class SongController {
         log.info("Starting song generation: {}", createSongDto);
         SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
         log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
-        var bertId = bertService.generateSongFromChords(songtextAndChordsDto);
+//        var bertId = bertService.generateSongFromChords(songtextAndChordsDto);
 
-        var song = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood(), bertId);
+        String randomBirdId = UUID.randomUUID().toString();
+        var song = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood(), randomBirdId, null);
         songCache.addNewSong(song);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

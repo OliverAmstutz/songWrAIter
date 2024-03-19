@@ -1,17 +1,15 @@
 package ch.zuehlke.fullstack.hackathon.service.bertservice;
 
 import ch.zuehlke.fullstack.hackathon.model.BertPromptDto;
-import ch.zuehlke.fullstack.hackathon.model.BertPromptInput;
 import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.model.SongUrls;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
+import ch.zuehlke.fullstack.hackathon.service.replicate.ReplicateApi;
+import ch.zuehlke.fullstack.hackathon.service.replicate.ReplicateResult;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 import java.util.Map;
@@ -24,13 +22,13 @@ public class BertService {
 
     private final Map<String, Future<?>> scheduledJobs = new ConcurrentHashMap<>();
 
-    private final String apiKey;
-
     private final SongCache songCache;
 
-    public BertService(@Value("${replicateApiKey}") String apiKey, SongCache songCache) {
-        this.apiKey = apiKey;
+    private final ReplicateApi replicateApi;
+
+    public BertService(SongCache songCache, ReplicateApi replicateApi) {
         this.songCache = songCache;
+        this.replicateApi = replicateApi;
     }
 
     public String generateSongFromChords(final SongtextAndChordsDto songtextAndChords, final Song song) {
@@ -38,43 +36,46 @@ public class BertService {
         int chordsCount = countOccurrences(chords);
 
         String notes = String.join("|", Collections.nCopies(chordsCount + 1, "?"));
+        var input = bertPromptDto(song, chords, notes);
+        var result = replicateApi.createBertJob(input);
+
+        log.info("Created bert job: {}", result);
+
+        var id = (String) result.id();
+        songCache.updateSong(song.bertId(id));
+
+        pollResult(song, result);
+
+        return id;
+    }
+
+    @NotNull
+    private static BertPromptDto bertPromptDto(Song song, String chords, String notes) {
         int tempo = song.genre().tempo;
         int seed = -1;
         int sampleWidth = 3; //Number of potential predictions to sample from. The higher, the more chaotic the output. Default is 10
         int timeSignature = song.genre().timeSignature;
 
-        BertPromptDto input = new BertPromptDto(chords, notes, tempo, seed, sampleWidth, timeSignature);
-        BertPromptInput bertPromptInput = new BertPromptInput("58bdc2073c9c07abcc4200fe808e15b1a555dbb1390e70f5daa6b3d81bd11fb1", input);
+        return new BertPromptDto(chords, notes, tempo, seed, sampleWidth, timeSignature);
+    }
 
-        Map result = WebClient.create("https://api.replicate.com/v1/predictions")
-                .post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Token %s".formatted(apiKey))
-                .bodyValue(bertPromptInput)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-
-        log.info("Created bert job: {}", result);
-
-        var id = (String) result.get("id");
-        songCache.updateSong(song.bertId(id));
-
-        String jobUrl = ((Map) result.get("urls")).get("get").toString();
+    private void pollResult(Song song, ReplicateResult<Map<String, String>> result) {
+        String jobUrl = result.getJobUrl();
         ScheduledFuture<?> job = executor.scheduleWithFixedDelay(() -> {
-            Map map = pollResult(jobUrl);
+            var pollResult = replicateApi.pollBertResult(jobUrl);
 
-            String status = (String) map.get("status");
+            String status = pollResult.status();
 
             log.info("Current status: {}", status);
 
-            if (!status.equals("starting") && !status.equals("processing")) {
+            if (pollResult.isDone()) {
                 scheduledJobs.get(jobUrl).cancel(true);
                 scheduledJobs.remove(jobUrl);
                 log.info("Cancelling job: {}", jobUrl);
             }
-            if (status.equals("succeeded")) {
-                Map<String, String> urls = (Map<String, String>) map.get("output");
+
+            if (pollResult.isSucceeded()) {
+                Map<String, String> urls = pollResult.output();
 
                 Song updatedSong = song.urls(new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
                 songCache.updateSong(updatedSong);
@@ -82,8 +83,6 @@ public class BertService {
             }
         }, 3, 2, TimeUnit.SECONDS);
         scheduledJobs.put(jobUrl, job);
-
-        return id;
     }
 
     private int countOccurrences(String chords) {
@@ -101,14 +100,5 @@ public class BertService {
         String chorusChords = String.join("|", songtextAndChords.chorusChords());
         String verseChords = String.join("|", songtextAndChords.verseChords());
         return verseChords + "|" + chorusChords + "|" + verseChords + "|" + chorusChords;
-    }
-
-    private Map pollResult(String url) {
-        return WebClient.create(url)
-                .get()
-                .header("Authorization", "Token %s".formatted(apiKey))
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
     }
 }

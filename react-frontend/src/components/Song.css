@@ -6,17 +6,34 @@
     margin-left: auto;
     margin-right: auto;
     width: 100%;
+
+    audio {
+        width: 100%;
+    }
+}
+
+.lyrics{
+    padding-top: 20px;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 80%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.canvas-container canvas {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
 }
 
 .song-topic {
-    font-size: 24px; /* Adjust font size as needed */
-    color: #007BFF; /* Adjust the color as needed */
-    margin-bottom: 10px; /* Provides some spacing between the topic and the rest of the content */
-    text-align: center; /* Centers the topic for emphasis */
-}
-
-.song-item img {
-    width: 80%;
-    max-width: 80%;
-    height: auto;
+    font-size: 24px;
+    color: #007BFF;
+    margin-bottom: 20px;
+    text-align: center;
 }

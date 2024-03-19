@@ -1,3 +1,4 @@
+import "./CreateSongForm.css"
 import {SubmitHandler, useForm} from "react-hook-form"
 import remoteService from "../services/RemoteService.tsx";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
@@ -42,7 +43,7 @@ export default function CreateSongForm() {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <label>Topic</label>
-            <input {...register("topic")} />
+            <input type={"text"} {...register("topic")} />
 
             <label>Genre</label>
             <select {...register("genre")} defaultValue={""}>

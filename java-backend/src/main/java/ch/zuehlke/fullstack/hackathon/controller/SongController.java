@@ -11,11 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,14 +37,17 @@ public class SongController {
     @ApiResponse(responseCode = "201", description = "Successfully triggered song creation")
     @ApiResponse(responseCode = "500", description = "Something failed internally")
     @PostMapping
-    public ResponseEntity<Void> createSong(@RequestBody PromptInputDto createSongDto) throws InterruptedException {
+    public ResponseEntity<Void> createSong(@RequestBody PromptInputDto createSongDto) {
+        var song = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood());
+        songCache.addNewSong(song);
+
         log.info("Starting song generation: {}", createSongDto);
         SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
         log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
-        var bertId = bertService.generateSongFromChords(songtextAndChordsDto);
+        var bertId = bertService.generateSongFromChords(songtextAndChordsDto, song);
 
-        var song = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood(), bertId);
-        songCache.addNewSong(song);
+        songCache.updateSong(new Song(song, bertId));
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

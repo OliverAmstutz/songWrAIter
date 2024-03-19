@@ -1,26 +1,38 @@
 import {useQuery} from "@tanstack/react-query";
 import remoteService from "../services/RemoteService.tsx";
-import Song from "./Song.tsx";
+import SongItem from "./SongItem.tsx";
 
-interface Song {
+export interface Song {
     id: string
     topic: string
     genre: string
     instruments: string[]
     mood: string
+    generatedVerseText?: string
+    generatedChorusText?: string
+    urls: SongUrls
+}
+
+export interface SongUrls {
+    mp3: string
+    score: string
+    midi: string
 }
 
 export default function SongList() {
     const query = useQuery({
         queryKey: ['songs'],
-        queryFn: () => remoteService.get<Song[]>("/song")
+        queryFn: () => remoteService.get<Song[]>("/song"),
+        refetchInterval: 3000
     })
 
     function renderSongs() {
-        return (<ul>
-            {query.data?.map((song) =>
-                <Song key={song.id} topic={song.topic}/>)
-            }</ul>);
+        return (
+            <ul>
+                {query.data?.map((song) =>
+                    <SongItem key={song.id} {...song}/>)
+                }</ul>
+        );
     }
 
     return <ul>{renderSongs()}</ul>

@@ -25,6 +25,6 @@ public record Song(
     }
 
     public Song(Song song, SongUrls songUrls) {
-        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, null, null, songUrls);
+        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, song.generatedVerseText, song.generatedChorusText, songUrls);
     }
 }

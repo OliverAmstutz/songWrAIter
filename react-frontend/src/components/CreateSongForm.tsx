@@ -81,11 +81,13 @@ export default function CreateSongForm() {
                 <div>
                     {["guitar", "piano", "drums", "violin", "bass", "saxophone", "flute", "cello"].map((instrument) => (
                         <div key={instrument}>
+                          <label>
                             <input
                                 type="checkbox"
                                 value={instrument}
                                 {...register("instruments")}
                             /> {instrument}
+                          </label>
                         </div>
                     ))}
                 </div>

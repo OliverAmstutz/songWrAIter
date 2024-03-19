@@ -1,6 +1,5 @@
 package ch.zuehlke.fullstack.hackathon.service.bertservice;
 
-
 import ch.zuehlke.fullstack.hackathon.model.BertPromptDto;
 import ch.zuehlke.fullstack.hackathon.model.BertPromptInput;
 import ch.zuehlke.fullstack.hackathon.model.Song;
@@ -38,7 +37,7 @@ public class BertService {
         String chords = buildChords(songtextAndChords);
         int chordsCount = countOccurrences(chords);
 
-        String notes = String.join("|", Collections.nCopies(chordsCount+1, "?"));
+        String notes = String.join("|", Collections.nCopies(chordsCount + 1, "?"));
         int tempo = song.genre().tempo;
         int seed = -1;
         int sampleWidth = 3; //Number of potential predictions to sample from. The higher, the more chaotic the output. Default is 10
@@ -74,7 +73,7 @@ public class BertService {
             if (status.equals("succeeded")) {
                 Map<String, String> urls = (Map<String, String>) map.get("output");
 
-                Song updatedSong = new Song(song, new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
+                Song updatedSong = song.urls(new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
                 songCache.updateSong(updatedSong);
                 log.info("Completed bert job: {}", updatedSong);
             }
@@ -83,7 +82,7 @@ public class BertService {
 
         String id = (String) result.get("id");
 
-        songCache.updateSong(new Song(song, id));
+        songCache.updateSong(song.bertId(id));
 
         return id;
     }
@@ -102,7 +101,7 @@ public class BertService {
     private static String buildChords(SongtextAndChordsDto songtextAndChords) {
         String chorusChords = String.join("|", songtextAndChords.chorusChords());
         String verseChords = String.join("|", songtextAndChords.verseChords());
-        return verseChords+"|"+chorusChords + "|" + verseChords+"|"+chorusChords;
+        return verseChords + "|" + chorusChords + "|" + verseChords + "|" + chorusChords;
     }
 
     private Map pollResult(String url) {

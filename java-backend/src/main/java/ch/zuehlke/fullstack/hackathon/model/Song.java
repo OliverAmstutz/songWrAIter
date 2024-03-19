@@ -26,8 +26,12 @@ public record Song(
         this(id, topic, genre, instruments, mood, null, generatedVerseText, generatedChorusText, null, null);
     }
 
-    public Song(Song song, SongUrls songUrls) {
-        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, song.generatedVerseText, song.generatedChorusText, songUrls, song.lastTimeUpdated);
+    public Song bertId(String bertId) {
+        return new Song(id, topic, genre, instruments, mood, bertId, generatedVerseText, generatedChorusText, null, lastTimeUpdated);
+    }
+
+    public Song urls(SongUrls songUrls) {
+        return new Song(id, topic, genre, instruments, mood, bertId, generatedVerseText, generatedChorusText, songUrls, lastTimeUpdated);
     }
 
     // overwriteTimeStamp

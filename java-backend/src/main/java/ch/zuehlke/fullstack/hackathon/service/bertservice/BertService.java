@@ -8,6 +8,7 @@ import ch.zuehlke.fullstack.hackathon.model.SongUrls;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,16 @@ public class BertService {
     }
 
     public String generateSongFromChords(final SongtextAndChordsDto songtextAndChords, final Song song) {
-        String chords = String.join("|", songtextAndChords.chorusChords()); //TODO: extend with verses
-        String notes = String.join("|", Collections.nCopies(songtextAndChords.chorusChords().size(), "?"));
+        String chords = buildChords(songtextAndChords);
+        int chordsCount = countOccurrences(chords);
+
+        String notes = String.join("|", Collections.nCopies(chordsCount+1, "?"));
         int tempo = 120;
         int seed = -1;
-        int sample_width = 80;
-        int time_signature = 4;
+        int sampleWidth = 80;
+        int timeSignature = 4;
 
-        BertPromptDto input = new BertPromptDto(chords, notes, tempo, seed, sample_width, time_signature);
+        BertPromptDto input = new BertPromptDto(chords, notes, tempo, seed, sampleWidth, timeSignature);
         BertPromptInput bertPromptInput = new BertPromptInput("58bdc2073c9c07abcc4200fe808e15b1a555dbb1390e70f5daa6b3d81bd11fb1", input);
 
         Map result = WebClient.create("https://api.replicate.com/v1/predictions")
@@ -83,6 +86,23 @@ public class BertService {
         songCache.updateSong(new Song(song, id));
 
         return id;
+    }
+
+    private int countOccurrences(String chords) {
+        int count = 0;
+        for (int i = 0; i < chords.length(); i++) {
+            if (chords.charAt(i) == '|') {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @NotNull
+    private static String buildChords(SongtextAndChordsDto songtextAndChords) {
+        String chorusChords = String.join("|", songtextAndChords.chorusChords());
+        String verseChords = String.join("|", songtextAndChords.verseChords());
+        return verseChords+"|"+chorusChords + "|" + verseChords+"|"+chorusChords;
     }
 
     private Map pollResult(String url) {

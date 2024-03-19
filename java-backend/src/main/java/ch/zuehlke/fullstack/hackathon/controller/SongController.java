@@ -47,7 +47,7 @@ public class SongController {
         songCache.addNewSong(song);
         var bertId = bertService.generateSongFromChords(songtextAndChordsDto, song);
 
-        songCache.updateSong(new Song(song, bertId));
+
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

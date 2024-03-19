@@ -78,7 +78,11 @@ public class BertService {
         }, 3, 2, TimeUnit.SECONDS);
         scheduledJobs.put(jobUrl, job);
 
-        return (String) result.get("id");
+        String id = (String) result.get("id");
+
+        songCache.updateSong(new Song(song, id));
+
+        return id;
     }
 
     private Map pollResult(String url) {

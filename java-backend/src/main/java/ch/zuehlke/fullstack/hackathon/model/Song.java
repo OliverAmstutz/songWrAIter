@@ -21,7 +21,7 @@ public record Song(
     }
 
     public Song(UUID id, String topic, String genre, List<String> instruments, String mood, String generatedVerseText, String generatedChorusText) {
-        this(id, topic, genre, instruments, mood, null, null, null, null);
+        this(id, topic, genre, instruments, mood, null, generatedVerseText, generatedChorusText, null);
     }
 
     public Song(Song song, SongUrls songUrls) {

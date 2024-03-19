@@ -1,10 +1,12 @@
 package ch.zuehlke.fullstack.hackathon.controller;
 
-import ch.zuehlke.fullstack.hackathon.model.CreateSongDto;
+import ch.zuehlke.fullstack.hackathon.model.PromptInputDto;
 import ch.zuehlke.fullstack.hackathon.model.Song;
-import ch.zuehlke.fullstack.hackathon.service.SongService;
+import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongAndChordService;
+import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,21 +19,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/song")
+@Slf4j
 public class SongController {
 
-    private final SongService service;
+    private final SongAndChordService service;
 
-    public SongController(SongService service) {
+    public SongController(SongAndChordService service) {
         this.service = service;
     }
 
     @Operation(summary = "Create a new Song",
             description = "This endpoint can be used to create a new song")
-    @ApiResponse(responseCode = "200", description = "Successfully triggered song creation")
+    @ApiResponse(responseCode = "201", description = "Successfully triggered song creation")
     @ApiResponse(responseCode = "500", description = "Something failed internally")
     @PostMapping
-    public ResponseEntity<Void> createSong(@RequestBody CreateSongDto createSongDto) {
-        service.addNewSong(createSongDto);
+    public ResponseEntity<Void> createSong(@RequestBody PromptInputDto createSongDto) {
+        SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

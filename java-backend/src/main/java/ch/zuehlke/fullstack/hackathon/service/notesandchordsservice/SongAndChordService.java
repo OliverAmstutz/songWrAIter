@@ -1,12 +1,15 @@
 package ch.zuehlke.fullstack.hackathon.service.notesandchordsservice;
 
 import ch.zuehlke.fullstack.hackathon.model.PromptInputDto;
+import ch.zuehlke.fullstack.hackathon.model.Song;
+import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.chat.ChatCompletionChoice;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,21 +17,27 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SongAndChordService {
 
     public static final String ASSISTANT_PROMPT = "Your are a helpful assistant that always answers in a structured json. The first one is 'songtext' it is a String which is a songtext to a song. The second one is 'chords' it is an array of string which are the chords";
 
     @Value("${apiKey}")
     private String apiKey;
+
     private OpenAiService openAiService;
+
+    private final SongCache songCache;
 
     public SongtextAndChordsDto generateNotesAndChordsFromInput(final PromptInputDto promptInputDto) {
         final String userPrompt = createPromptFromInput(promptInputDto);
         System.out.println(userPrompt);
         Optional<SongtextAndChordsDto> openAiResponse = getOpenAiResponse(userPrompt);
+        songCache.addNewSong(promptInputDto);
 
         if (openAiResponse.isPresent()) {
             log.info("Success! Result={}", openAiResponse.get());
@@ -94,4 +103,7 @@ public class SongAndChordService {
         return openAiService;
     }
 
+    public List<Song> getAllSongs() {
+        return songCache.getAllSongs();
+    }
 }

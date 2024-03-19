@@ -1,6 +1,7 @@
 package ch.zuehlke.fullstack.hackathon.service.notesandchordsservice;
 
 import lombok.Builder;
+import lombok.ToString;
 
 import java.util.List;
 

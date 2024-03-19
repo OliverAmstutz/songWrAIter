@@ -2,67 +2,78 @@ import "./CreateSongForm.css"
 import {SubmitHandler, useForm} from "react-hook-form"
 import remoteService from "../services/RemoteService.tsx";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useEffect} from "react";
 
 
 interface IFormInput {
-    topic: string
-    genre: string
-    instruments: string[]
-    mood: string
+    topic: string;
+    genre: string;
+    instruments: string[];
+    mood: string;
 }
 
 export default function CreateSongForm() {
-    const {register, handleSubmit} = useForm<IFormInput>({
+    const {register, handleSubmit, watch, setValue} = useForm<IFormInput>({
         defaultValues: {
             topic: '',
             genre: '',
             instruments: [],
             mood: '',
         },
-    })
+    });
 
-    const queryClient = useQueryClient()
+    const selectedInstruments = watch("instruments");
+
+    useEffect(() => {
+        if (selectedInstruments.length > 2) {
+            setValue("instruments", selectedInstruments.slice(0, 2));
+        }
+    }, [selectedInstruments, setValue]);
+
+    const queryClient = useQueryClient();
 
     function submitForm(data: IFormInput) {
-        return remoteService.post("/song", {
-            ...data,
-            instruments: [data.instruments]
-        });
+        return remoteService.post("/song", data);
     }
 
     const mutation = useMutation({
         mutationFn: submitForm,
         onSuccess: () => {
-            // Invalidate and refetch
-            queryClient.invalidateQueries({queryKey: ['songs']})
+            queryClient.invalidateQueries({queryKey: ['songs']});
         },
-    })
+    });
 
-    const onSubmit: SubmitHandler<IFormInput> = (data) => mutation.mutate(data)
+    const onSubmit: SubmitHandler<IFormInput> = (data) => mutation.mutate(data);
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <label>Topic</label>
+            <label style={{fontWeight: 'bold'}}>Topic:</label>
+            <label>Whats the song about</label>
             <input type={"text"} {...register("topic")} />
 
-            <label>Genre</label>
-            <select {...register("genre")} defaultValue={""}>
-                <option value="rock">rock</option>
-                <option value="blues">blues</option>
-                <option value="pop">pop</option>
-            </select>
+            <fieldset>
+                <legend style={{fontWeight: 'bold'}}>Instruments</legend>
+                <label>Select up to two instruments</label>
+                <div>
+                    {["guitar", "piano", "drums", "violin", "bass", "saxophone", "flute", "cello"].map((instrument) => (
+                        <div key={instrument}>
+                            <input
+                                type="checkbox"
+                                value={instrument}
+                                {...register("instruments")}
+                            /> {instrument}
+                        </div>
+                    ))}
+                </div>
+            </fieldset>
 
-            <label>Instruments</label>
-            <select {...register("instruments")}>
-                <option value="guitar">guitar</option>
-                <option value="piano">piano</option>
-                <option value="drums">drums</option>
-            </select>
-
-            <label>Mood</label>
+            <label style={{fontWeight: 'bold'}}>Mood:</label>
+            <label>What mood should your child feel after the song is played?</label>
             <select {...register("mood")}>
                 <option value="sad">sad</option>
                 <option value="happy">happy</option>
+                <option value="sleepy">sad</option>
                 <option value="neutral">neutral</option>
             </select>
 

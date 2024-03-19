@@ -36,6 +36,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 
+    // https://mvnrepository.com/artifact/io.netty/netty-resolver-dns-native-macos
+    runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.107.Final:osx-aarch_64'
 }
 
 test {

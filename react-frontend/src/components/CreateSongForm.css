@@ -19,6 +19,11 @@ input[type=submit] {
     cursor: pointer;
 }
 
+input[type=submit]:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
 input[type=text], select {
     width: 100%;
     padding: 12px 20px;

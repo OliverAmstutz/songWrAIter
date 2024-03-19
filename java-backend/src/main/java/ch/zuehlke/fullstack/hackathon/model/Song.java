@@ -6,7 +6,7 @@ import java.util.UUID;
 public record Song(
         UUID id,
         String topic,
-        String genre,
+        Genre genre,
         List<String> instruments,
         String mood,
         String bertId,
@@ -20,7 +20,7 @@ public record Song(
         this(song.id, song.topic, song.genre, song.instruments, song.mood, bertId, song.generatedVerseText, song.generatedChorusText, null);
     }
 
-    public Song(UUID id, String topic, String genre, List<String> instruments, String mood, String generatedVerseText, String generatedChorusText) {
+    public Song(UUID id, String topic, Genre genre, List<String> instruments, String mood, String generatedVerseText, String generatedChorusText) {
         this(id, topic, genre, instruments, mood, null, generatedVerseText, generatedChorusText, null);
     }
 

@@ -5,12 +5,19 @@ import {Song} from "./SongList.tsx";
 export default function SongItem({topic, id, urls, generatedChorusText, generatedVerseText}: Song) {
     return (
         <li className={"song-item"}>
-            {topic}
-            {urls ? <AudioPlayer id={id} songUrls={urls}/> : 'song is still loading'
+            <h2 className="song-topic">{topic}</h2>
+            {urls ? <AudioPlayer id={id} songUrls={urls}/> : ' song is still loading'
             }
             <div>
-            Lyrics: {`${generatedVerseText ?? ''} ${generatedChorusText ?? ''}`}
-
+                <strong>
+                    Lyrics:
+                </strong>
+                {` ${generatedVerseText ?? ''} ${generatedChorusText ?? ''}`}
             </div>
+            {urls ?
+
+                    <img src={urls.score} alt="Song score"/>
+                : ''
+            }
         </li>)
 }

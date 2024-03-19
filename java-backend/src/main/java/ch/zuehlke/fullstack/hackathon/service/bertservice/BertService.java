@@ -3,7 +3,6 @@ package ch.zuehlke.fullstack.hackathon.service.bertservice;
 
 import ch.zuehlke.fullstack.hackathon.model.BertPromptDto;
 import ch.zuehlke.fullstack.hackathon.model.BertPromptInput;
-import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ public class BertService {
     @Value("${replicateApiKey}")
     private String apiKey;
 
-    public Song generateSongFromChords(final SongtextAndChordsDto songtextAndChords) throws InterruptedException {
+    public String generateSongFromChords(final SongtextAndChordsDto songtextAndChords) throws InterruptedException {
         //build input from songtextandChords
         String chords = String.join("|", songtextAndChords.chorusChords()); //TODO: extend with verses
         String notes = String.join("|", Collections.nCopies(songtextAndChords.chorusChords().size(), "?"));
@@ -43,19 +42,11 @@ public class BertService {
                 .block();
 
         log.info(result.toString());
-        Map updatedResult;
-        int counter = 0;
-
-        while (!result.get("status").equals("succeeded") && counter < 20) {
-            counter++;
-            pollResult(result);
-        }
-
 
         //Map zurück auf Song
         //download songs from bert urls
 
-        return null;
+        return (String) result.get("id");
     }
 
     private Map pollResult(Map result) {
@@ -66,6 +57,4 @@ public class BertService {
                 .bodyToMono(Map.class)
                 .block();
     }
-
-
 }

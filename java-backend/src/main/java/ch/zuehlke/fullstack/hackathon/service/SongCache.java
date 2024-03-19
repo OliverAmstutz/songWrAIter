@@ -1,7 +1,5 @@
 package ch.zuehlke.fullstack.hackathon.service;
 
-import ch.zuehlke.fullstack.hackathon.model.CreateSongDto;
-import ch.zuehlke.fullstack.hackathon.model.PromptInputDto;
 import ch.zuehlke.fullstack.hackathon.model.Song;
 import org.springframework.stereotype.Repository;
 
@@ -22,13 +20,7 @@ public class SongCache {
                 .toList();
     }
 
-    public void addNewSong(PromptInputDto promptInputDto) {
-        UUID id = UUID.randomUUID();
-        songs.put(id, new Song(
-                id,
-                promptInputDto.topic(),
-                promptInputDto.genre(),
-                promptInputDto.instruments(),
-                promptInputDto.mood()));
+    public void addNewSong(Song song) {
+        songs.put(song.id(), song);
     }
 }

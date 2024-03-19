@@ -28,13 +28,10 @@ public class SongAndChordService {
 
     private OpenAiService openAiService;
 
-    private final SongCache songCache;
-
     public SongtextAndChordsDto generateNotesAndChordsFromInput(final PromptInputDto promptInputDto) {
         final String userPrompt = createPromptFromInput(promptInputDto);
         log.info("User prompt: {}",userPrompt);
         Optional<SongtextAndChordsDto> openAiResponse = getOpenAiResponse(userPrompt);
-        songCache.addNewSong(promptInputDto);
 
         if (openAiResponse.isPresent()) {
             log.info("Success! Result={}", openAiResponse.get());
@@ -95,9 +92,5 @@ public class SongAndChordService {
         }
 
         return openAiService;
-    }
-
-    public List<Song> getAllSongs() {
-        return songCache.getAllSongs();
     }
 }

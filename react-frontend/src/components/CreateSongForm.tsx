@@ -22,7 +22,7 @@ const GENRES = [
     { value: "electronic", label: "Electronic" },
     { value: "country", label: "Country" },
     { value: "reggae", label: "Reggae" },
-    { value: "Schwiizer Popmusig", label: "Schwiizer Popmusig" },
+    { value: "schwiizer Popmusig", label: "Schwiizer Popmusig" },
 ];
 
 export default function CreateSongForm() {

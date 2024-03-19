@@ -32,15 +32,42 @@ public class SongAndChordService {
 
     public SongtextAndChordsDto generateNotesAndChordsFromInput(final PromptInputDto promptInputDto) {
         final String userPrompt = createPromptFromInput(promptInputDto);
-        log.info("User prompt: {}",userPrompt);
+        log.info("User prompt: {}", userPrompt);
         Optional<SongtextAndChordsDto> openAiResponse = getOpenAiResponse(userPrompt);
-        songCache.addNewSong(promptInputDto);
-
+        UUID songId = songCache.addNewSong(promptInputDto);
+        try {
+            createSongFile(songId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (openAiResponse.isPresent()) {
             log.info("Success! Result={}", openAiResponse.get());
             return openAiResponse.get();
         }
         return null;
+    }
+
+    public void createSongFile(UUID id) throws IOException {
+        try {
+            // Load the template file as a resource
+            ClassPathResource cpr = new ClassPathResource("soundfiles/template.mp3");
+            String targetPathForSong = "/Users/phil/Documents/hackathon/java-backend/src/songfiles";
+            // Define the path for the new file
+            File outputFile = new File(targetPathForSong + "/" + id.toString() + ".mp3");
+            // Use try-with-resources to ensure proper closure of streams
+            try (InputStream is = cpr.getInputStream();
+                 OutputStream os = new FileOutputStream(outputFile)) {
+                // Copy the file
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+            }
+        } catch (Exception e) {
+            // Handle exceptions here
+            e.printStackTrace();
+        }
     }
 
     private Optional<SongtextAndChordsDto> getOpenAiResponse(final String userPrompt) {

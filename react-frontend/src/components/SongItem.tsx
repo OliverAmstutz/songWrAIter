@@ -10,7 +10,7 @@ interface Song {
 export default function SongItem({topic, id}: Song) {
     return (
         <li className={"song-item"}>
-            {topic}
+            {topic} {id}
             <AudioPlayer id={id}/>
         </li>)
 }

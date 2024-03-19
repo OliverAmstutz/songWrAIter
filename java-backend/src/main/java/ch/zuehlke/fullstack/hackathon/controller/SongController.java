@@ -1,5 +1,6 @@
 package ch.zuehlke.fullstack.hackathon.controller;
 
+import ch.zuehlke.fullstack.hackathon.model.Genre;
 import ch.zuehlke.fullstack.hackathon.model.PromptInputDto;
 import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
@@ -9,7 +10,6 @@ import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndC
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +42,7 @@ public class SongController {
         log.info("Starting song generation: {}", createSongDto);
         SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
         log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
-        var newlyCreatedSong = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext());
+        var newlyCreatedSong = new Song(UUID.randomUUID(), createSongDto.topic(), Genre.mapGenre(createSongDto.genre()), createSongDto.instruments(), createSongDto.mood(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext());
 
         songCache.addNewSong(newlyCreatedSong);
         bertService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);

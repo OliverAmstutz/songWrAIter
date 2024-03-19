@@ -57,6 +57,9 @@ public class BertService {
 
         log.info("Created bert job: {}", result);
 
+        var id = (String) result.get("id");
+        songCache.updateSong(song.bertId(id));
+
         String jobUrl = ((Map) result.get("urls")).get("get").toString();
         ScheduledFuture<?> job = executor.scheduleWithFixedDelay(() -> {
             Map map = pollResult(jobUrl);
@@ -79,10 +82,6 @@ public class BertService {
             }
         }, 3, 2, TimeUnit.SECONDS);
         scheduledJobs.put(jobUrl, job);
-
-        String id = (String) result.get("id");
-
-        songCache.updateSong(song.bertId(id));
 
         return id;
     }

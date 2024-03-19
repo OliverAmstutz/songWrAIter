@@ -102,7 +102,7 @@ export default function CreateSongForm() {
                 <option value="neutral">neutral</option>
             </select>
 
-            <input type="submit"/>
+            <input type="submit" disabled={mutation.isPending}/>
         </form>)
 
 }

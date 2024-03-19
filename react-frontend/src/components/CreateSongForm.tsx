@@ -12,6 +12,19 @@ interface IFormInput {
     mood: string;
 }
 
+const GENRES = [
+    { value: "rock", label: "Rock" },
+    { value: "blues", label: "Blues" },
+    { value: "pop", label: "Pop" },
+    { value: "jazz", label: "Jazz" },
+    { value: "classical", label: "Classical" },
+    { value: "hip-hop", label: "Hip-Hop" },
+    { value: "electronic", label: "Electronic" },
+    { value: "country", label: "Country" },
+    { value: "reggae", label: "Reggae" },
+    { value: "Schwiizer Popmusig", label: "Schwiizer Popmusig" },
+];
+
 export default function CreateSongForm() {
     const {register, handleSubmit, watch, setValue} = useForm<IFormInput>({
         defaultValues: {
@@ -52,6 +65,16 @@ export default function CreateSongForm() {
             <label>Whats the song about</label>
             <input type={"text"} {...register("topic")} />
 
+            <label style={{fontWeight: 'bold'}}>Genre:</label>
+            <label>What style is your song?</label>
+            <select {...register("genre")} defaultValue="">
+                {GENRES.map((genre) => (
+                    <option key={genre.value} value={genre.value}>
+                        {genre.label}
+                    </option>
+                ))}
+            </select>
+
             <fieldset>
                 <legend style={{fontWeight: 'bold'}}>Instruments</legend>
                 <label>Select up to two instruments</label>
@@ -73,7 +96,7 @@ export default function CreateSongForm() {
             <select {...register("mood")}>
                 <option value="sad">sad</option>
                 <option value="happy">happy</option>
-                <option value="sleepy">sad</option>
+                <option value="sleepy">sleepy</option>
                 <option value="neutral">neutral</option>
             </select>
 

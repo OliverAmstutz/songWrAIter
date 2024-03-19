@@ -39,13 +39,13 @@ public class SongController {
     @ApiResponse(responseCode = "500", description = "Something failed internally")
     @PostMapping
     public ResponseEntity<Void> createSong(@RequestBody PromptInputDto createSongDto) {
-        var song = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood());
-        songCache.addNewSong(song);
-
         log.info("Starting song generation: {}", createSongDto);
         SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
         log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
-//        var bertId = bertService.generateSongFromChords(songtextAndChordsDto, song);
+        var song = new Song(UUID.randomUUID(), createSongDto.topic(), createSongDto.genre(), createSongDto.instruments(), createSongDto.mood(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext());
+
+        songCache.addNewSong(song);
+        var bertId = bertService.generateSongFromChords(songtextAndChordsDto, song);
 
         songCache.updateSong(new Song(song, bertId));
 

@@ -1,4 +1,4 @@
-package ch.zuehlke.fullstack.hackathon;
+package ch.zuehlke.fullstack.hackathon.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SoundFileController {
-    @Value("classpath:soundfiles/Master_Of_Puppets.mp3")
+    @Value("classpath:soundfiles/template.mp3")
     Resource soundFile;
 
     @GetMapping("/sound-file")

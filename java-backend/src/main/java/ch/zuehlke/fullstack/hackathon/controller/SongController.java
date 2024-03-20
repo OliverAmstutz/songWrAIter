@@ -5,6 +5,7 @@ import ch.zuehlke.fullstack.hackathon.model.PromptInputDto;
 import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.BertService;
+import ch.zuehlke.fullstack.hackathon.service.bertservice.ImageService;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.MusicGenService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongAndChordService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
@@ -26,12 +27,14 @@ public class SongController {
     private final SongAndChordService service;
     private final BertService bertService;
     private final MusicGenService musicGenService;
+    private final ImageService imageService;
 
     private final SongCache songCache;
 
-    public SongController(SongAndChordService service, BertService bertService, MusicGenService musicGenService, SongCache songCache) {
+    public SongController(SongAndChordService service, BertService bertService, MusicGenService musicGenService, ImageService imageService, SongCache songCache) {
         this.service = service;
         this.bertService = bertService;
+        this.imageService = imageService;
         this.musicGenService = musicGenService;
         this.songCache = songCache;
     }
@@ -45,12 +48,14 @@ public class SongController {
         log.info("Starting song generation: {}", createSongDto);
         SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
         log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
+
         var newlyCreatedSong = new Song(UUID.randomUUID(), createSongDto.topic(), Genre.mapGenre(createSongDto.genre()), createSongDto.instruments(), createSongDto.mood(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext());
 
         songCache.addNewSong(newlyCreatedSong);
         bertService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
         musicGenService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
 
+        imageService.generateImageFrom(createSongDto.topic(), createSongDto.mood(), newlyCreatedSong.id());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

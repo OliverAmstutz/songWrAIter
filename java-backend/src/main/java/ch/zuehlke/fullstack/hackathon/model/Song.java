@@ -13,25 +13,28 @@ public record Song(
         String bertId,
         String generatedVerseText,
         String generatedChorusText,
-        SongUrls urls,
+        SongUrls bertUrls,
+        SongUrls musicGenUrls,
         LocalDateTime lastTimeUpdated
 ) {
 
-
-    public Song(Song song, String bertId) {
-        this(song.id, song.topic, song.genre, song.instruments, song.mood, bertId, song.generatedVerseText, song.generatedChorusText, null, song.lastTimeUpdated);
-    }
-
     public Song(UUID id, String topic, Genre genre, List<String> instruments, String mood, String generatedVerseText, String generatedChorusText) {
-        this(id, topic, genre, instruments, mood, null, generatedVerseText, generatedChorusText, null, null);
+        this(id, topic, genre, instruments, mood, null, generatedVerseText, generatedChorusText, null, null, null);
     }
 
-    public Song(Song song, SongUrls songUrls) {
-        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, song.generatedVerseText, song.generatedChorusText, songUrls, song.lastTimeUpdated);
+    public Song bertId(String bertId) {
+        return new Song(id, topic, genre, instruments, mood, bertId, generatedVerseText, generatedChorusText, bertUrls, musicGenUrls, lastTimeUpdated);
     }
 
-    // overwriteTimeStamp
-    public Song(Song song, LocalDateTime dateTime) {
-        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, song.generatedVerseText, song.generatedChorusText, song.urls, dateTime);
+    public Song bertUrls(SongUrls songUrls) {
+        return new Song(id, topic, genre, instruments, mood, bertId, generatedVerseText, generatedChorusText, songUrls, musicGenUrls, lastTimeUpdated);
+    }
+
+    public Song musicGenUrls(SongUrls songUrls) {
+        return new Song(id, topic, genre, instruments, mood, bertId, generatedVerseText, generatedChorusText, bertUrls, songUrls, lastTimeUpdated);
+    }
+
+    public Song lastTimeUpdated(LocalDateTime dateTime) {
+        return new Song(id, topic, genre, instruments, mood, bertId, generatedVerseText, generatedChorusText, bertUrls, musicGenUrls, dateTime);
     }
 }

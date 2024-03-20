@@ -24,11 +24,15 @@ public class SongCache {
         return this.songs
                 .values()
                 .stream()
-                .filter(onlySongsnewerThanOneHour())
+                .filter(onlySongsNewerThanOneHour())
                 .toList();
     }
 
-    private Predicate<Song> onlySongsnewerThanOneHour() {
+    public Song getById(UUID id) {
+        return songs.get(id);
+    }
+
+    private Predicate<Song> onlySongsNewerThanOneHour() {
         return song -> song.lastTimeUpdated() != null && song.lastTimeUpdated().isAfter(LocalDateTime.now().minusHours(1));
     }
 
@@ -40,13 +44,13 @@ public class SongCache {
     }
 
     private Song updateTimeStamp(final Song song) {
-        return new Song(song, LocalDateTime.now());
+        return song.lastTimeUpdated(LocalDateTime.now());
     }
 
     public void updateSong(Song song) {
         this.songs = songSaver.load();
-        Song overwriteSongWithAdpatedTimeStamp = new Song(song, LocalDateTime.now());
-        this.songs.put(overwriteSongWithAdpatedTimeStamp.id(), overwriteSongWithAdpatedTimeStamp);
+        Song overwriteSongWithAdaptedTimeStamp = song.lastTimeUpdated(LocalDateTime.now());
+        this.songs.put(overwriteSongWithAdaptedTimeStamp.id(), overwriteSongWithAdaptedTimeStamp);
         songSaver.save(this.songs);
     }
 }

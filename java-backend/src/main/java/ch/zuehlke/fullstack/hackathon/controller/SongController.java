@@ -6,6 +6,7 @@ import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.BertService;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.ImageService;
+import ch.zuehlke.fullstack.hackathon.service.bertservice.MusicGenService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongAndChordService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,14 +26,16 @@ public class SongController {
 
     private final SongAndChordService service;
     private final BertService bertService;
+    private final MusicGenService musicGenService;
     private final ImageService imageService;
 
     private final SongCache songCache;
 
-    public SongController(SongAndChordService service, BertService bertService, ImageService imageService, SongCache songCache) {
+    public SongController(SongAndChordService service, BertService bertService, MusicGenService musicGenService, ImageService imageService, SongCache songCache) {
         this.service = service;
         this.bertService = bertService;
         this.imageService = imageService;
+        this.musicGenService = musicGenService;
         this.songCache = songCache;
     }
 
@@ -53,6 +56,7 @@ public class SongController {
 
         songCache.addNewSong(newlyCreatedSong);
         bertService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
+        musicGenService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

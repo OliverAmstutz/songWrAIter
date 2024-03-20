@@ -1,6 +1,7 @@
 package ch.zuehlke.fullstack.hackathon.service.bertservice;
 
 import ch.zuehlke.fullstack.hackathon.model.BertPromptDto;
+import ch.zuehlke.fullstack.hackathon.model.MusicGenPromptDto;
 import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.model.SongUrls;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
@@ -36,15 +37,22 @@ public class BertService {
         int chordsCount = countOccurrences(chords);
 
         String notes = String.join("|", Collections.nCopies(chordsCount + 1, "?"));
-        var input = bertPromptDto(song, chords, notes);
-        var result = replicateApi.createBertJob(input);
+        //var input = bertPromptDto(song, chords, notes);
+        var input = new MusicGenPromptDto(
+                "%s from the following chord progression: %s. It should be composed of the following instruments plus voice: %s. The melody should be '%s' and it should be of the genre '%s'"
+                        .formatted(song.topic(), chords, song.instruments(), song.mood(), song.genre())
+        );
+
+        //var result = replicateApi.createBertJob(input);
+        var result = replicateApi.createMusicGenJob(input);
 
         log.info("Created bert job: {}", result);
 
         var id = (String) result.id();
         songCache.updateSong(song.bertId(id));
 
-        pollResult(song, result);
+        //pollResult(song, result);
+        pollMusicGenResult(song, result);
 
         return id;
     }
@@ -78,6 +86,32 @@ public class BertService {
                 Map<String, String> urls = pollResult.output();
 
                 Song updatedSong = song.urls(new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
+                songCache.updateSong(updatedSong);
+                log.info("Completed bert job: {}", updatedSong);
+            }
+        }, 3, 2, TimeUnit.SECONDS);
+        scheduledJobs.put(jobUrl, job);
+    }
+
+    private void pollMusicGenResult(Song song, ReplicateResult<String> result) {
+        String jobUrl = result.getJobUrl();
+        ScheduledFuture<?> job = executor.scheduleWithFixedDelay(() -> {
+            var pollResult = replicateApi.pollMusicGenResult(jobUrl);
+
+            String status = pollResult.status();
+
+            log.info("Current status: {}", status);
+
+            if (pollResult.isDone()) {
+                scheduledJobs.get(jobUrl).cancel(true);
+                scheduledJobs.remove(jobUrl);
+                log.info("Cancelling job: {}", jobUrl);
+            }
+
+            if (pollResult.isSucceeded()) {
+                String output = pollResult.output();
+
+                Song updatedSong = song.urls(new SongUrls(output, null, null));
                 songCache.updateSong(updatedSong);
                 log.info("Completed bert job: {}", updatedSong);
             }

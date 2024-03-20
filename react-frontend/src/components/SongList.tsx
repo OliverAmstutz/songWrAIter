@@ -2,7 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import remoteService from "../services/RemoteService.tsx";
 import SongItem from "./SongItem.tsx";
 
-export interface Song {
+export interface MusicgenSong {
     id: string
     topic: string
     genre: string
@@ -22,7 +22,7 @@ export interface SongUrls {
 export default function SongList() {
     const query = useQuery({
         queryKey: ['songs'],
-        queryFn: () => remoteService.get<Song[]>("/song"),
+        queryFn: () => remoteService.get<MusicgenSong[]>("/song"),
         refetchInterval: 3000
     })
 

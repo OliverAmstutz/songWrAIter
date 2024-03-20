@@ -1,9 +1,15 @@
 import "./Song.css"
 import AudioPlayer from "./AudioPlayer.tsx";
-import {Song} from "./SongList.tsx";
+import {MusicgenSong} from "./SongList.tsx";
 import CroppedImage from "./CroppedImage.tsx";
 
-export default function SongItem({topic, id, urls, generatedChorusText, generatedVerseText}: Song) {
+export default function SongItem({
+                                     topic,
+                                     id,
+                                     urls,
+                                     generatedChorusText,
+                                     generatedVerseText
+                                 }: MusicgenSong) {
 
 
     return (

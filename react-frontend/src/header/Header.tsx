@@ -107,12 +107,9 @@ export default function Header() {
         <>
             <Menu right styles={hamburgerMenuStyles} isOpen={isOpen} onOpen={handleIsOpen} onClose={handleIsOpen}>
                 <NavLink to="/" onClick={closeSideBar}>
-                    Home
+                    Song WrAIter
                 </NavLink>
-                <NavLink to="/other" onClick={closeSideBar}>
-                    Other Page
-                </NavLink>
-                <NavLink to="https://github.com/Cyberdog52/hackathon">Github</NavLink>
+                <NavLink to="https://github.com/OliverAmstutz/songWrAIter">Github</NavLink>
             </Menu>
             <HeaderSection>
                 <Link to="/">

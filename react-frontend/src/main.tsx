@@ -6,7 +6,6 @@ import Header from './header/Header';
 import {ToastContainer} from 'react-toastify';
 import ErrorBoundary from './error/ErrorBoundary';
 import ErrorPage from './error/ErrorPage';
-import MainPage from './components/MainPage.tsx';
 import SongPage from './components/SongPage.tsx';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
@@ -20,8 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Header/>
                 <ErrorBoundary>
                     <Routes>
-                        <Route path="/" element={<MainPage/>}/>
-                        <Route path="/other" element={<SongPage/>}/>
+                        <Route path="/" element={<SongPage/>}/>
                         <Route path="*" element={<ErrorPage statusCode={400}
                                                             errorMessage={'Page not found'}/>}/>
                     </Routes>

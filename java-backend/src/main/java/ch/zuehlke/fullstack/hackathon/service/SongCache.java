@@ -19,6 +19,7 @@ public class SongCache {
     private Map<UUID, Song> songs = new ConcurrentHashMap<>();
 
     public List<Song> getAllSongs() {
+
         this.songs = songSaver.load();
 
         return this.songs

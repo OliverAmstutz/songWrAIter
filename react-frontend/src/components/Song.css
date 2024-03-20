@@ -51,6 +51,11 @@
     flex: 0;
 }
 
+.image {
+    border: 8px solid #000;
+    display: inline-block;
+}
+
 .spinner-container {
     position: relative;
     width: 512px;

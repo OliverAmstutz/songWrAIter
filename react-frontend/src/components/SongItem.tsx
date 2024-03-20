@@ -37,7 +37,7 @@ export default function SongItem({
                 </div>
                 <div className="right-column">
                     {
-                        imageUrl ? <img src={imageUrl} alt={topic}/>
+                        imageUrl ? <img className="image" src={imageUrl} alt={topic}/>
                             : <div className="spinner-container">
                                 <div className="spinner"></div>
                                 <div className="spinner-text">Loading Image...</div>

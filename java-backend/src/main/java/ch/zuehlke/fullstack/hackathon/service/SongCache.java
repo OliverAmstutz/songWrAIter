@@ -28,6 +28,10 @@ public class SongCache {
                 .toList();
     }
 
+    public Song getById(UUID id) {
+        return songs.get(id);
+    }
+
     private Predicate<Song> onlySongsnewerThanOneHour() {
         return song -> song.lastTimeUpdated() != null && song.lastTimeUpdated().isAfter(LocalDateTime.now().minusHours(1));
     }

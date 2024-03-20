@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 @Service
@@ -45,7 +46,7 @@ public class BertService {
         var id = (String) result.id();
         songCache.updateSong(song.bertId(id));
 
-        pollResult(song, result);
+        pollResult(song.id(), result);
 
         return id;
     }
@@ -60,7 +61,7 @@ public class BertService {
         return new BertPromptDto(chords, notes, tempo, seed, sampleWidth, timeSignature);
     }
 
-    private void pollResult(Song song, ReplicateResult<Map<String, String>> result) {
+    private void pollResult(UUID songId, ReplicateResult<Map<String, String>> result) {
         String jobUrl = result.getJobUrl();
         ScheduledFuture<?> job = executor.scheduleWithFixedDelay(() -> {
             var pollResult = replicateApi.pollBertResult(jobUrl);
@@ -78,7 +79,8 @@ public class BertService {
             if (pollResult.isSucceeded()) {
                 Map<String, String> urls = pollResult.output();
 
-                Song updatedSong = song.urls(new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
+                var song = songCache.getById(songId);
+                Song updatedSong = song.bertUrls(new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
                 songCache.updateSong(updatedSong);
                 log.info("Completed bert job: {}", updatedSong);
             }

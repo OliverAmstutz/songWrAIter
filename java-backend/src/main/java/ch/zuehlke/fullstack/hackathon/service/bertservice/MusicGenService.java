@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 @Service
@@ -45,12 +46,12 @@ public class MusicGenService {
         var id = (String) result.id();
         songCache.updateSong(song.bertId(id));
 
-        pollMusicGenResult(song, result);
+        pollMusicGenResult(song.id(), result);
 
         return id;
     }
 
-    private void pollMusicGenResult(Song song, ReplicateResult<String> result) {
+    private void pollMusicGenResult(UUID songId, ReplicateResult<String> result) {
         String jobUrl = result.getJobUrl();
         ScheduledFuture<?> job = executor.scheduleWithFixedDelay(() -> {
             var pollResult = replicateApi.pollMusicGenResult(jobUrl);
@@ -68,7 +69,8 @@ public class MusicGenService {
             if (pollResult.isSucceeded()) {
                 String output = pollResult.output();
 
-                Song updatedSong = song.urls(new SongUrls(output, null, null));
+                var song = songCache.getById(songId);
+                Song updatedSong = song.musicGenUrls(new SongUrls(output, null, null));
                 songCache.updateSong(updatedSong);
                 log.info("Completed bert job: {}", updatedSong);
             }

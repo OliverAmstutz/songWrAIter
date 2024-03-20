@@ -46,7 +46,13 @@ public class BertService {
         var id = (String) result.id();
         songCache.updateSong(song.bertId(id));
 
-        pollResult(song.id(), result);
+        replicateApi.pollForResults(result.getJobUrl(), (ReplicateResult<Map<String, String>> pollResult) -> {
+            var urls = pollResult.output();
+
+            var songToUpdate = songCache.getById(song.id());
+            var updatedSong = songToUpdate.bertUrls(new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
+            songCache.updateSong(updatedSong);
+        });
 
         return id;
     }
@@ -59,33 +65,6 @@ public class BertService {
         int timeSignature = song.genre().timeSignature;
 
         return new BertPromptDto(chords, notes, tempo, seed, sampleWidth, timeSignature);
-    }
-
-    private void pollResult(UUID songId, ReplicateResult<Map<String, String>> result) {
-        String jobUrl = result.getJobUrl();
-        ScheduledFuture<?> job = executor.scheduleWithFixedDelay(() -> {
-            var pollResult = replicateApi.pollBertResult(jobUrl);
-
-            String status = pollResult.status();
-
-            log.info("Current status: {}", status);
-
-            if (pollResult.isDone()) {
-                scheduledJobs.get(jobUrl).cancel(true);
-                scheduledJobs.remove(jobUrl);
-                log.info("Cancelling job: {}", jobUrl);
-            }
-
-            if (pollResult.isSucceeded()) {
-                Map<String, String> urls = pollResult.output();
-
-                var song = songCache.getById(songId);
-                Song updatedSong = song.bertUrls(new SongUrls(urls.get("mp3"), urls.get("score"), urls.get("midi")));
-                songCache.updateSong(updatedSong);
-                log.info("Completed bert job: {}", updatedSong);
-            }
-        }, 3, 2, TimeUnit.SECONDS);
-        scheduledJobs.put(jobUrl, job);
     }
 
     private int countOccurrences(String chords) {

@@ -24,10 +24,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     implementation 'com.theokanning.openai-gpt3-java:service:0.18.2'
+    implementation group: 'com.azure.spring', name: 'spring-cloud-azure-starter-storage-blob', version: '5.10.0'
 
     // Test packages
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
     testCompileOnly 'org.assertj:assertj-core:3.25.3'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
@@ -35,6 +35,10 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+
+    // https://mvnrepository.com/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos
+    implementation group: 'com.azure.spring', name: 'spring-cloud-azure-starter-data-cosmos', version: '5.10.0'
+
 
     // https://mvnrepository.com/artifact/io.netty/netty-resolver-dns-native-macos
     runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.107.Final:osx-aarch_64'

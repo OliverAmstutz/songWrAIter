@@ -1,5 +1,6 @@
 package ch.zuehlke.fullstack.hackathon.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,19 +13,25 @@ public record Song(
         String bertId,
         String generatedVerseText,
         String generatedChorusText,
-        SongUrls urls
+        SongUrls urls,
+        LocalDateTime lastTimeUpdated
 ) {
 
 
     public Song(Song song, String bertId) {
-        this(song.id, song.topic, song.genre, song.instruments, song.mood, bertId, song.generatedVerseText, song.generatedChorusText, null);
+        this(song.id, song.topic, song.genre, song.instruments, song.mood, bertId, song.generatedVerseText, song.generatedChorusText, null, song.lastTimeUpdated);
     }
 
     public Song(UUID id, String topic, Genre genre, List<String> instruments, String mood, String generatedVerseText, String generatedChorusText) {
-        this(id, topic, genre, instruments, mood, null, generatedVerseText, generatedChorusText, null);
+        this(id, topic, genre, instruments, mood, null, generatedVerseText, generatedChorusText, null, null);
     }
 
     public Song(Song song, SongUrls songUrls) {
-        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, song.generatedVerseText, song.generatedChorusText, songUrls);
+        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, song.generatedVerseText, song.generatedChorusText, songUrls, song.lastTimeUpdated);
+    }
+
+    // overwriteTimeStamp
+    public Song(Song song, LocalDateTime dateTime) {
+        this(song.id, song.topic, song.genre, song.instruments, song.mood, song.bertId, song.generatedVerseText, song.generatedChorusText, song.urls, dateTime);
     }
 }

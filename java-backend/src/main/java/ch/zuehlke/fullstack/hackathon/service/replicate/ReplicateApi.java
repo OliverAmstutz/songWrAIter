@@ -18,6 +18,8 @@ import java.util.function.Consumer;
 @Slf4j
 public class ReplicateApi {
 
+    private static final int INITIAL_DELAY = 3;
+    private static final int INTERVAL = 2;
     private static final String URL = "https://api.replicate.com/v1/predictions";
 
     private static final String BERT_MODEL = "58bdc2073c9c07abcc4200fe808e15b1a555dbb1390e70f5daa6b3d81bd11fb1";
@@ -63,7 +65,7 @@ public class ReplicateApi {
             var pollResult = pollResult(jobUrl);
             var status = pollResult.status();
 
-            log.info("Current status: {}", status);
+            log.info("Job {} status: '{}'", jobUrl, status);
 
             if (pollResult.isDone()) {
                 scheduledJobs.get(jobUrl).cancel(true);
@@ -75,7 +77,7 @@ public class ReplicateApi {
                 songUpdater.accept(pollResult);
                 log.info("Completed bert job: {}", jobUrl);
             }
-        }, 3, 2, TimeUnit.SECONDS);
+        }, INITIAL_DELAY, INTERVAL, TimeUnit.SECONDS);
 
         scheduledJobs.put(jobUrl, job);
     }

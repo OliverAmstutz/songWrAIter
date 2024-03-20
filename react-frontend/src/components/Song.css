@@ -50,3 +50,58 @@
 .right-column {
     flex: 0;
 }
+
+.spinner-container {
+    position: relative;
+    width: 512px;
+    height: 512px;
+}
+
+.spinner {
+    position: absolute;
+    top: 64px;
+    left: 64px;
+    width: 384px;
+    height: 384px;
+    border: 12px solid transparent;
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite, rainbow 3s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rainbow {
+    0% {
+        border-top-color: #ff0000; /* Red */
+    }
+    16.666% {
+        border-top-color: #ff7f00; /* Orange */
+    }
+    33.333% {
+        border-top-color: #ffff00; /* Yellow */
+    }
+    50% {
+        border-top-color: #00ff00; /* Green */
+    }
+    66.666% {
+        border-top-color: #0000ff; /* Blue */
+    }
+    83.333% {
+        border-top-color: #4b0082; /* Indigo */
+    }
+    100% {
+        border-top-color: #8a2be2; /* Violet */
+    }
+}
+
+.spinner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

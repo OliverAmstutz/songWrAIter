@@ -3,9 +3,15 @@ import AudioPlayer from "./AudioPlayer.tsx";
 import {Song} from "./SongList.tsx";
 import CroppedImage from "./CroppedImage.tsx";
 
-export default function SongItem({topic, id, bertUrls, musicGenUrls, imageUrl, generatedChorusText, generatedVerseText}: Song) {
-
-
+export default function SongItem({
+                                     topic,
+                                     id,
+                                     bertUrls,
+                                     musicGenUrls,
+                                     imageUrl,
+                                     generatedChorusText,
+                                     generatedVerseText
+                                 }: Song) {
     return (
         <li className={"song-item"}>
             <div className="container">
@@ -30,7 +36,14 @@ export default function SongItem({topic, id, bertUrls, musicGenUrls, imageUrl, g
                     </div>
                 </div>
                 <div className="right-column">
-                    <img src={imageUrl} alt={topic}/>
+                    {
+                        imageUrl ? <img src={imageUrl} alt={topic}/>
+                            : <div className="spinner-container">
+                                <div className="spinner"></div>
+                                <div className="spinner-text">Loading Image...</div>
+                            </div>
+                    }
+
                 </div>
             </div>
 

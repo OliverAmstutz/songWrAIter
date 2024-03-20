@@ -46,36 +46,15 @@ public class MusicGenService {
         var id = (String) result.id();
         songCache.updateSong(song.bertId(id));
 
-        pollMusicGenResult(song.id(), result);
+        replicateApi.pollForResults(result.getJobUrl(), (ReplicateResult<String> pollResult) -> {
+            var output = pollResult.output();
+
+            var songToUpdate = songCache.getById(song.id());
+            Song updatedSong = songToUpdate.musicGenUrls(new SongUrls(output, null, null));
+            songCache.updateSong(updatedSong);
+        });
 
         return id;
-    }
-
-    private void pollMusicGenResult(UUID songId, ReplicateResult<String> result) {
-        String jobUrl = result.getJobUrl();
-        ScheduledFuture<?> job = executor.scheduleWithFixedDelay(() -> {
-            var pollResult = replicateApi.pollMusicGenResult(jobUrl);
-
-            String status = pollResult.status();
-
-            log.info("Current status: {}", status);
-
-            if (pollResult.isDone()) {
-                scheduledJobs.get(jobUrl).cancel(true);
-                scheduledJobs.remove(jobUrl);
-                log.info("Cancelling job: {}", jobUrl);
-            }
-
-            if (pollResult.isSucceeded()) {
-                String output = pollResult.output();
-
-                var song = songCache.getById(songId);
-                Song updatedSong = song.musicGenUrls(new SongUrls(output, null, null));
-                songCache.updateSong(updatedSong);
-                log.info("Completed bert job: {}", updatedSong);
-            }
-        }, 3, 2, TimeUnit.SECONDS);
-        scheduledJobs.put(jobUrl, job);
     }
 
     @NotNull

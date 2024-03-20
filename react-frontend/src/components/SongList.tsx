@@ -12,6 +12,7 @@ export interface MusicgenSong {
     generatedChorusText?: string
     bertUrls: SongUrls
     musicGenUrls: SongUrls
+    imageUrl: string
 }
 
 export interface SongUrls {

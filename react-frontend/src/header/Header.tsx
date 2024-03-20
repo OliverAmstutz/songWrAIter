@@ -1,46 +1,46 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import logo from '/src/assets/zuhlke-logo-rgb.png';
-import {Link} from 'react-router-dom';
-import {slide as Menu} from 'react-burger-menu';
+import { Link } from 'react-router-dom';
+import { slide as Menu } from 'react-burger-menu';
 
 const HeaderSection = styled.header`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0.5rem;
-    background-color: white;
-    z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0.5rem;
+  background-color: white;
+  z-index: 1;
 `;
 
 const Logo = styled.img`
-    height: 4rem;
-    float: left;
+  height: 4rem;
+  float: left;
 `;
 
 const NavLink = styled(Link)`
-    text-decoration: none;
-    font-weight: bold;
-    padding: 0.8rem;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.8rem;
 `;
 
 const Title = styled.h1`
-    font-size: 1.5rem;
-    padding-left: 1rem;
-    margin: 0 0 0 0;
-    color: var(--secondary);
-    @media (max-width: 500px) {
-        font-size: 1rem;
-    }
+  font-size: 1.5rem;
+  padding-left: 1rem;
+  margin: 0 0 0 0;
+  color: var(--secondary);
+  @media (max-width: 500px) {
+    font-size: 1rem;
+  }
 `;
 
 const HamburgerMenuPlaceholder = styled.div`
-    width: 36px;
-    height: 30px;
-    padding: 18px;
+  width: 36px;
+  height: 30px;
+  padding: 18px;
 `;
 
 const hamburgerMenuStyles = {
@@ -105,20 +105,19 @@ export default function Header() {
 
     return (
         <>
-            <Menu right styles={hamburgerMenuStyles} isOpen={isOpen} onOpen={handleIsOpen}
-                  onClose={handleIsOpen}>
+            <Menu right styles={hamburgerMenuStyles} isOpen={isOpen} onOpen={handleIsOpen} onClose={handleIsOpen}>
                 <NavLink to="/" onClick={closeSideBar}>
-                    Children Songs
+                    Song WrAIter
                 </NavLink>
-                <NavLink to="/musicgensongpage" onClick={closeSideBar}>
-                    Musicgen Page
-                </NavLink>
-                <NavLink to="https://github.com/Cyberdog52/hackathon">Github</NavLink>
+                <NavLink to="https://github.com/OliverAmstutz/songWrAIter">Github</NavLink>
             </Menu>
             <HeaderSection>
                 <Link to="/">
                     <Logo src={logo} alt="Logo"/>
                 </Link>
+                <NavLink to="/musicgensongpage" onClick={closeSideBar}>
+                    MusicGen Page
+                </NavLink>
                 <NavLink to="/">
                     <Title>Zühlke Hackathon 2024</Title>
                 </NavLink>

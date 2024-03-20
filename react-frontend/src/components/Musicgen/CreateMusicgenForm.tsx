@@ -24,7 +24,7 @@ interface IFormSubmitInput {
 }
 
 export default function CreateMusicgenForm() {
-    const {register, handleSubmit,} = useForm<IFormInput>({
+    const {register, handleSubmit, reset} = useForm<IFormInput>({
         defaultValues: {
             genre: '',
             chordProgression: '',
@@ -46,6 +46,7 @@ export default function CreateMusicgenForm() {
         mutationFn: submitForm,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['musicgenSongs']});
+            reset()
         },
     });
 
@@ -84,8 +85,8 @@ export default function CreateMusicgenForm() {
                 <option value="calm">calm</option>
                 <option value="energized">energized</option>
                 <option value="happy">happy</option>
-                <option value="sleepy">sleepy</option>
-                <option value="neutral">neutral</option>
+                <option value="sad">sad</option>
+                <option value="angry">angry</option>
             </select>
 
             <fieldset>

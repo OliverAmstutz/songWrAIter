@@ -13,20 +13,20 @@ interface IFormInput {
 }
 
 const GENRES = [
-    { value: "rock", label: "Rock" },
-    { value: "blues", label: "Blues" },
-    { value: "pop", label: "Pop" },
-    { value: "jazz", label: "Jazz" },
-    { value: "classical", label: "Classical" },
-    { value: "hip-hop", label: "Hip-Hop" },
-    { value: "electronic", label: "Electronic" },
-    { value: "country", label: "Country" },
-    { value: "reggae", label: "Reggae" },
-    { value: "schwiizer Popmusig", label: "Schwiizer Popmusig" },
+    {value: "rock", label: "Rock"},
+    {value: "blues", label: "Blues"},
+    {value: "pop", label: "Pop"},
+    {value: "jazz", label: "Jazz"},
+    {value: "classical", label: "Classical"},
+    {value: "hip-hop", label: "Hip-Hop"},
+    {value: "electronic", label: "Electronic"},
+    {value: "country", label: "Country"},
+    {value: "reggae", label: "Reggae"},
+    {value: "schwiizer Popmusig", label: "Schwiizer Popmusig"},
 ];
 
 export default function CreateSongForm() {
-    const {register, handleSubmit, watch, setValue} = useForm<IFormInput>({
+    const {register, handleSubmit, watch, setValue, reset} = useForm<IFormInput>({
         defaultValues: {
             topic: '',
             genre: '',
@@ -53,6 +53,7 @@ export default function CreateSongForm() {
         mutationFn: submitForm,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['songs']});
+            reset()
         },
     });
 
@@ -81,13 +82,13 @@ export default function CreateSongForm() {
                 <div>
                     {["guitar", "piano", "drums", "violin", "bass", "saxophone", "flute", "cello"].map((instrument) => (
                         <div key={instrument}>
-                          <label>
-                            <input
-                                type="checkbox"
-                                value={instrument}
-                                {...register("instruments")}
-                            /> {instrument}
-                          </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    value={instrument}
+                                    {...register("instruments")}
+                                /> {instrument}
+                            </label>
                         </div>
                     ))}
                 </div>

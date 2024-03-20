@@ -40,7 +40,7 @@ public class AlternativeMusicgenService {
 
     private final Map<String, Future<?>> scheduledJobs = new ConcurrentHashMap<>();
 
-    public AlternativeMusicgenService(@Value("${apiKeyPhil}") String apiKey,
+    public AlternativeMusicgenService(@Value("${replicateApiKey}") String apiKey,
                                       SongAndChordService chatGpt,
                                       MusicgenSongCache cache) {
         this.apiKey = apiKey;

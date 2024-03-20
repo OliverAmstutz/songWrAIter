@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -20,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
+@Profile("local")
 public class LocalJsonSaver implements SongSaver {
 
     public static final String USER_HOME = System.getProperty("user.home");

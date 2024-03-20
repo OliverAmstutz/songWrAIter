@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import logo from '/src/assets/zuhlke-logo-rgb.png';
-import { Link } from 'react-router-dom';
-import { slide as Menu } from 'react-burger-menu';
+import {Link} from 'react-router-dom';
+import {slide as Menu} from 'react-burger-menu';
 
 const HeaderSection = styled.header`
   display: flex;
@@ -109,15 +109,15 @@ export default function Header() {
                 <NavLink to="/" onClick={closeSideBar}>
                     Song WrAIter
                 </NavLink>
+                <NavLink to="/musicgensongpage" onClick={closeSideBar}>
+                    Phil's Ego Page
+                </NavLink>
                 <NavLink to="https://github.com/OliverAmstutz/songWrAIter">Github</NavLink>
             </Menu>
             <HeaderSection>
                 <Link to="/">
                     <Logo src={logo} alt="Logo"/>
                 </Link>
-                <NavLink to="/musicgensongpage" onClick={closeSideBar}>
-                    MusicGen Page
-                </NavLink>
                 <NavLink to="/">
                     <Title>Zühlke Hackathon 2024</Title>
                 </NavLink>

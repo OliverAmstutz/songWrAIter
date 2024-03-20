@@ -10,7 +10,8 @@ export interface Song {
     mood: string
     generatedVerseText?: string
     generatedChorusText?: string
-    urls: SongUrls
+    bertUrls: SongUrls
+    musicGenUrls: SongUrls
 }
 
 export interface SongUrls {

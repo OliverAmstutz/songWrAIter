@@ -49,15 +49,13 @@ public class SongController {
         SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
         log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
 
-        var imageUrl = imageService.generateImageFrom(createSongDto.topic());
-        log.info("Song Image URL = {}", imageUrl);
-
         var newlyCreatedSong = new Song(UUID.randomUUID(), createSongDto.topic(), Genre.mapGenre(createSongDto.genre()), createSongDto.instruments(), createSongDto.mood(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext());
 
         songCache.addNewSong(newlyCreatedSong);
         bertService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
         musicGenService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
 
+        imageService.generateImageFrom(createSongDto.topic(), createSongDto.mood(), newlyCreatedSong.id());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

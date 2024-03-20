@@ -1,4 +1,6 @@
 package ch.zuehlke.fullstack.hackathon.model;
 
-public record ImageDto(String url) {
+import java.util.List;
+
+public record ImageDto(long created, List<ImageUrlDto> data) {
 }

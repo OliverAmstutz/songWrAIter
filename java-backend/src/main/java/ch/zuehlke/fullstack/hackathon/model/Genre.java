@@ -34,7 +34,7 @@ public enum Genre {
             case "electronic" -> Genre.ELECTRONIC;
             case "country" -> Genre.COUNTRY;
             case "reggae" -> Genre.REGGAE;
-            case "schwiizerPopmusig" -> Genre.SCHWIIZERPOPMUSIG;
+            case "schwiizer Popmusig" -> Genre.SCHWIIZERPOPMUSIG;
             default -> throw new IllegalArgumentException("Illegal genre: " + name);
         };
     }

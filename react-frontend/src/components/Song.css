@@ -37,3 +37,16 @@
     margin-bottom: 20px;
     text-align: center;
 }
+
+.container {
+    display: flex;
+}
+
+.left-column {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.right-column {
+    flex: 0;
+}

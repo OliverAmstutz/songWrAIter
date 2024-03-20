@@ -4,6 +4,7 @@ import remoteService from "../../services/RemoteService.tsx";
 import {GENRES} from "../../shared/GENRES.ts";
 
 interface IFormInput {
+    title: string,
     genre: string;
     chordProgression: string;
     artist: string;
@@ -14,6 +15,7 @@ interface IFormInput {
 }
 
 interface IFormSubmitInput {
+    title: string,
     genre: string;
     chordProgression: string[];
     artist: string;
@@ -26,6 +28,7 @@ interface IFormSubmitInput {
 export default function CreateMusicgenForm() {
     const {register, handleSubmit, reset} = useForm<IFormInput>({
         defaultValues: {
+            title: '',
             genre: '',
             chordProgression: '',
             artist: '',
@@ -57,6 +60,9 @@ export default function CreateMusicgenForm() {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
+            <label style={{fontWeight: 'bold'}}>Title:</label>
+            <input {...register("title")} type={"text"}/>
+
             <label style={{fontWeight: 'bold'}}>Genre:</label>
             <select {...register("genre")} defaultValue="">
                 {GENRES.map((genre) => (

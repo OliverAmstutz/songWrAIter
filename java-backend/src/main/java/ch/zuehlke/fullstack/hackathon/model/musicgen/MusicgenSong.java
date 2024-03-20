@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public record MusicgenSong(
         UUID id,
+        String title,
         String genre,
         String prompt,
         List<String> chordProgression,
@@ -19,6 +20,7 @@ public record MusicgenSong(
     public MusicgenSong(MusicgenSong song, URL url) {
         this(
                 song.id,
+                song.title,
                 song.genre,
                 song.prompt,
                 song.chordProgression,

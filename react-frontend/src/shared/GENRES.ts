@@ -6,6 +6,7 @@ export const GENRES = [
     {value: "jazz", label: "Jazz"},
     {value: "classical", label: "Classical"},
     {value: "hip-hop", label: "Hip-Hop"},
+    {value: "techno", label: "Techno"},
     {value: "electronic", label: "Electronic"},
     {value: "country", label: "Country"},
     {value: "reggae", label: "Reggae"},

@@ -141,6 +141,7 @@ public class AlternativeMusicgenService {
     private MusicgenSong createMusicgenSongFromDto(CreateSongDto dto, String prompt) {
         return new MusicgenSong(
                 UUID.randomUUID(),
+                dto.title(),
                 dto.genre(),
                 prompt,
                 dto.chordProgression(),

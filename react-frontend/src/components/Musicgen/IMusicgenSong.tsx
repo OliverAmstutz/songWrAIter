@@ -1,5 +1,6 @@
 export interface IMusicgenSong {
     id: string
+    title: string
     genre: string
     chordProgression: string
     prompt: string

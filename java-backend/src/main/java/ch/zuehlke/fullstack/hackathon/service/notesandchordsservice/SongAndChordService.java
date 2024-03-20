@@ -47,14 +47,14 @@ public class SongAndChordService {
         String systemPrompt = """
                 You are a prompter for a music-generative ai. Take the  
                 following input: 
-                        - genre (e.g classic)
-                        - artist (e.g. avici)
-                        - chord progression (e.g. E, G, A)
-                        - beats per minute: (e.g. 100)
-                        - time signature: (e.g. 3/4)
-                        - mood: (e.g. upbeat, low, happy, powerful, sad, angry,  joy)
-                        - instruments (e.g. guitar, drums)
-                        
+                         - genre (e.g classic)
+                         - artist (e.g. avici)
+                         - chord progression (e.g. E, G, A)
+                         - beats per minute: (e.g. 100)
+                         - time signature: (e.g. 3/4)
+                         - mood: (e.g. upbeat, low, happy, powerful, sad, angry,  joy)
+                         - instruments (e.g. guitar, drums)
+                         
                         You respond in the following way, don't say anything else:
                         Classic song in the style of avici with chord progression 'E, G, A' leading up to a crescendo. Use violins,  
                         cellos, kettledrums and flutes

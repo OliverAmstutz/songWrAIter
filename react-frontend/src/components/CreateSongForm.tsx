@@ -96,7 +96,8 @@ export default function CreateSongForm() {
             <label style={{fontWeight: 'bold'}}>Mood:</label>
             <label>What mood should your child feel after the song is played?</label>
             <select {...register("mood")}>
-                <option value="sad">sad</option>
+                <option value="calm">calm</option>
+                <option value="energized">energized</option>
                 <option value="happy">happy</option>
                 <option value="sleepy">sleepy</option>
                 <option value="neutral">neutral</option>

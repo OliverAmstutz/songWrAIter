@@ -3,8 +3,10 @@ package ch.zuehlke.fullstack.hackathon.controller;
 import ch.zuehlke.fullstack.hackathon.model.Genre;
 import ch.zuehlke.fullstack.hackathon.model.PromptInputDto;
 import ch.zuehlke.fullstack.hackathon.model.Song;
+import ch.zuehlke.fullstack.hackathon.model.musicgen.CreateSongDto;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.BertService;
+import ch.zuehlke.fullstack.hackathon.service.musicgenservice.MusicgenService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongAndChordService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,13 +25,19 @@ import java.util.UUID;
 public class SongController {
 
     private final SongAndChordService service;
+
     private final BertService bertService;
+
+    private final MusicgenService musicgenService;
 
     private final SongCache songCache;
 
-    public SongController(SongAndChordService service, BertService bertService, SongCache songCache) {
+    public SongController(SongAndChordService service, BertService bertService,
+                          MusicgenService musicgenService,
+                          SongCache songCache) {
         this.service = service;
         this.bertService = bertService;
+        this.musicgenService = musicgenService;
         this.songCache = songCache;
     }
 
@@ -47,6 +55,16 @@ public class SongController {
         songCache.addNewSong(newlyCreatedSong);
         bertService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
 
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Create a new musicgen Song",
+            description = "This endpoint can be used to create a new musicgen song")
+    @ApiResponse(responseCode = "201", description = "Successfully triggered song creation")
+    @ApiResponse(responseCode = "500", description = "Something failed internally")
+    @PostMapping("musicgen")
+    public ResponseEntity<Void> createSongMusicGen(@RequestBody CreateSongDto songDto) {
+        musicgenService.generateSong(songDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -45,34 +45,38 @@ public class SongAndChordService {
 
     public String generateMusicgenPrompt(CreateSongDto createSongDto) {
         String systemPrompt = """
-                You are a creative prompter for a music-generative ai. Take the  
-                following  
-                        input: 
-                        - style (e.g classic)
-                        - tone scale (e.g. Emajor)
-                        - dynamics: (e.g. Staccato) 
+                You are a prompter for a music-generative ai. Take the  
+                following input: 
+                        - genre (e.g classic)
+                        - artist (e.g. avici)
+                        - chord progression (e.g. E, G, A)
+                        - beats per minute: (e.g. 100)
+                        - time signature: (e.g. 3/4)
                         - mood: (e.g. upbeat, low, happy, powerful, sad, angry,  joy)
                         - instruments (e.g. guitar, drums)
                         
                         You respond in the following way, don't say anything else:
-                        Classic song, Edo25 major g leading up to a crescendo. Use violins,  
-                        cellos,  
-                        kettledrum, flutes
-                        """;
+                        Classic song in the style of avici with chord progression 'E, G, A' leading up to a crescendo. Use violins,  
+                        cellos, kettledrums and flutes
+                """;
         String userPrompt = String.format(
                 """
                         make a prompt from this input:
-                        - style: %s
-                        - tone scale: %s 
-                        - dynamics: %s
-                        - mood: %s
-                        - instruments: %s 
+                                - genre: %s
+                                - artist: %s
+                                - chord progression: %s
+                                - beats per minute: %s
+                                - time signature: %s
+                                - mood: %s
+                                - instruments: %s
                         """,
-                createSongDto.style(),
-                createSongDto.toneScale(),
-                createSongDto.dynamics(),
+                createSongDto.genre(),
+                createSongDto.artist(),
+                transformArrayToText(createSongDto.chordProgression()),
+                createSongDto.beatsPerMinute(),
+                createSongDto.timeSignature(),
                 createSongDto.mood(),
-                getInstruments(createSongDto));
+                transformArrayToText(createSongDto.instruments()));
         log.info("User prompt: {}", userPrompt);
         ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(), systemPrompt);
         ChatMessage userMessage = new ChatMessage(ChatMessageRole.USER.value(), userPrompt);
@@ -158,9 +162,8 @@ public class SongAndChordService {
     }
 
     @NotNull
-    private static List<String> getInstruments(CreateSongDto createSongDto) {
-        return createSongDto
-                .instruments()
+    private static List<String> transformArrayToText(List<String> input) {
+        return input
                 .stream()
                 .map(i -> i + ",")
                 .toList();

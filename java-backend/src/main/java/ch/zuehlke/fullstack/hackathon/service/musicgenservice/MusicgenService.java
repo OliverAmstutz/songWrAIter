@@ -43,7 +43,7 @@ public class MusicgenService {
         int topP = 0;
         int temperature = 1;
         int classifierFreeGuidance = 3;
-        int duration = 20;
+        int duration = 33;
         String modelVersion = "stereo-large";
         String normalizationStrategy = "peak";
         String prompt = chatGpt.generateMusicgenPrompt(createSongDto);

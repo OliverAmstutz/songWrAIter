@@ -3,10 +3,9 @@
   <span>Zühlke Hackathon 2024</span>
   <div>
     @if (!isOpen()) {
-        <i class="material-icons" (click)="isOpen.set(true)">menu</i>
-    }
-    @else {
-        <i class="material-icons" (click)="isOpen.set(false)">close</i>
+      <i class="material-icons" (click)="isOpen.set(true)">menu</i>
+    } @else {
+      <i class="material-icons" (click)="isOpen.set(false)">close</i>
     }
   </div>
 </header>
@@ -16,9 +15,6 @@
     <section class="side-menu">
       <nav>
         <a routerLink="/" (click)="isOpen.set(false)">
-          Home
-        </a>
-        <a routerLink="/other" (click)="isOpen.set(false)">
           Other Page
         </a>
         <a href="https://github.com/Cyberdog52/hackathon" target="_blank">

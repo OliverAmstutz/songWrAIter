@@ -1,13 +1,13 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { ToastrService } from "ngx-toastr";
-import { catchError, firstValueFrom, of } from "rxjs";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {ToastrService} from "ngx-toastr";
+import {catchError, firstValueFrom, of} from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class RemoteService {
-  private backendBaseUrl = "api/example";
+  private backendBaseUrl = "api";
 
   constructor(
     private httpClient: HttpClient,

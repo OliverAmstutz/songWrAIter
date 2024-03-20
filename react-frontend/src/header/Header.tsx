@@ -108,10 +108,7 @@ export default function Header() {
             <Menu right styles={hamburgerMenuStyles} isOpen={isOpen} onOpen={handleIsOpen}
                   onClose={handleIsOpen}>
                 <NavLink to="/" onClick={closeSideBar}>
-                    Home
-                </NavLink>
-                <NavLink to="/other" onClick={closeSideBar}>
-                    Other Page
+                    Children Songs
                 </NavLink>
                 <NavLink to="/musicgensongpage" onClick={closeSideBar}>
                     Musicgen Page

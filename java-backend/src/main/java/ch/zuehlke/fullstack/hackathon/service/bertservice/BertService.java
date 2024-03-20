@@ -41,7 +41,7 @@ public class BertService {
         String notes = String.join("|", Collections.nCopies(chordsCount+1, "?"));
         int tempo = song.genre().tempo;
         int seed = -1;
-        int sampleWidth = 10; //Number of potential predictions to sample from. The higher, the more chaotic the output. Default is 10
+        int sampleWidth = 3; //Number of potential predictions to sample from. The higher, the more chaotic the output. Default is 10
         int timeSignature = song.genre().timeSignature;
 
         BertPromptDto input = new BertPromptDto(chords, notes, tempo, seed, sampleWidth, timeSignature);

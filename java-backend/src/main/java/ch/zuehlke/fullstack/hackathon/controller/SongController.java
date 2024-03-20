@@ -6,8 +6,11 @@ import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.model.musicgen.CreateSongDto;
 import ch.zuehlke.fullstack.hackathon.model.musicgen.MusicgenSong;
 import ch.zuehlke.fullstack.hackathon.service.MusicgenSongCache;
+import ch.zuehlke.fullstack.hackathon.service.MusicgenSongCache;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.BertService;
+import ch.zuehlke.fullstack.hackathon.service.bertservice.ImageService;
+import ch.zuehlke.fullstack.hackathon.service.bertservice.MusicGenService;
 import ch.zuehlke.fullstack.hackathon.service.musicgenservice.MusicgenService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongAndChordService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
@@ -31,21 +34,23 @@ import java.util.UUID;
 public class SongController {
 
     private final SongAndChordService service;
-
     private final BertService bertService;
-
-    private final MusicgenService musicgenService;
-
+    private final MusicGenService musicGenService;
+    private final ImageService imageService;
     private final SongCache songCache;
-
     private final MusicgenSongCache musicgenSongCache;
 
-    public SongController(SongAndChordService service, BertService bertService,
-                          MusicgenService musicgenService,
-                          SongCache songCache, MusicgenSongCache musicgenSongCache) {
+    public SongController(SongAndChordService service,
+                          BertService bertService,
+                          MusicGenService musicGenService,
+                          ImageService imageService
+                          SongCache songCache,
+                          MusicgenSongCache musicgenSongCache,
+                          MusicgenSongCache musicgenSongCache) {
         this.service = service;
         this.bertService = bertService;
-        this.musicgenService = musicgenService;
+        this.imageService = imageService;
+        this.musicGenService = musicGenService;
         this.songCache = songCache;
         this.musicgenSongCache = musicgenSongCache;
     }
@@ -57,26 +62,16 @@ public class SongController {
     @PostMapping
     public ResponseEntity<Void> createSong(@RequestBody PromptInputDto createSongDto) {
         log.info("Starting song generation: {}", createSongDto);
-        SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(
-                createSongDto);
-        log.info(
-                "Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}",
-                songtextAndChordsDto.chorusSongtext(),
-                songtextAndChordsDto.chorusChords(),
-                songtextAndChordsDto.verseSongtext(),
-                songtextAndChordsDto.verseChords());
-        var newlyCreatedSong = new Song(
-                UUID.randomUUID(),
-                createSongDto.topic(),
-                Genre.mapGenre(createSongDto.genre()),
-                createSongDto.instruments(),
-                createSongDto.mood(),
-                songtextAndChordsDto.verseSongtext(),
-                songtextAndChordsDto.chorusSongtext());
+        SongtextAndChordsDto songtextAndChordsDto = service.generateNotesAndChordsFromInput(createSongDto);
+        log.info("Chorus Song = {}, Chorus Chords = {}, Verse Song = {}, Verse Chords = {}", songtextAndChordsDto.chorusSongtext(), songtextAndChordsDto.chorusChords(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.verseChords());
+
+        var newlyCreatedSong = new Song(UUID.randomUUID(), createSongDto.topic(), Genre.mapGenre(createSongDto.genre()), createSongDto.instruments(), createSongDto.mood(), songtextAndChordsDto.verseSongtext(), songtextAndChordsDto.chorusSongtext());
 
         songCache.addNewSong(newlyCreatedSong);
         bertService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
+        musicGenService.generateSongFromChords(songtextAndChordsDto, newlyCreatedSong);
 
+        imageService.generateImageFrom(createSongDto.topic(), createSongDto.mood(), newlyCreatedSong.id());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

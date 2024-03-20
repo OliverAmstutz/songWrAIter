@@ -8,18 +8,18 @@ export default function MusicgenSongItem({
                                              chordProgression,
                                              prompt,
                                              artist,
-                                             songUrl
+                                             url
                                          }: IMusicgenSong) {
 
     return (
         <li className={"song-item"}>
             <h2 className="song-title">"missing title"</h2>
             <h2 className="description">Genre: {genre}</h2>
-            <h2 className="description">Chord progression{chordProgression}</h2>
+            <h2 className="description">Chord progression: {chordProgression}</h2>
             <h2 className="description">Prompt: {prompt}</h2>
             <h2 className="description">Artist: {artist}</h2>
-            {songUrl ?
-                <MusicgenAudioPlayer id={id} songUrl={songUrl}/> : ' song is still loading'
+            {url ?
+                <MusicgenAudioPlayer id={id} songUrl={url}/> : ' song is still loading'
             }
         </li>)
 }

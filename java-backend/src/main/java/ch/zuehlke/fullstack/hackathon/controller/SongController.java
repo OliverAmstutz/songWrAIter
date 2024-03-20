@@ -6,12 +6,11 @@ import ch.zuehlke.fullstack.hackathon.model.Song;
 import ch.zuehlke.fullstack.hackathon.model.musicgen.CreateSongDto;
 import ch.zuehlke.fullstack.hackathon.model.musicgen.MusicgenSong;
 import ch.zuehlke.fullstack.hackathon.service.MusicgenSongCache;
-import ch.zuehlke.fullstack.hackathon.service.MusicgenSongCache;
 import ch.zuehlke.fullstack.hackathon.service.SongCache;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.BertService;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.ImageService;
 import ch.zuehlke.fullstack.hackathon.service.bertservice.MusicGenService;
-import ch.zuehlke.fullstack.hackathon.service.musicgenservice.MusicgenService;
+import ch.zuehlke.fullstack.hackathon.service.musicgenservice.AlternativeMusicgenService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongAndChordService;
 import ch.zuehlke.fullstack.hackathon.service.notesandchordsservice.SongtextAndChordsDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +35,7 @@ public class SongController {
     private final SongAndChordService service;
     private final BertService bertService;
     private final MusicGenService musicGenService;
+    private final AlternativeMusicgenService alternativeMusicgenService;
     private final ImageService imageService;
     private final SongCache songCache;
     private final MusicgenSongCache musicgenSongCache;
@@ -43,12 +43,13 @@ public class SongController {
     public SongController(SongAndChordService service,
                           BertService bertService,
                           MusicGenService musicGenService,
-                          ImageService imageService
+                          AlternativeMusicgenService alternativeMusicgenService,
+                          ImageService imageService,
                           SongCache songCache,
-                          MusicgenSongCache musicgenSongCache,
                           MusicgenSongCache musicgenSongCache) {
         this.service = service;
         this.bertService = bertService;
+        this.alternativeMusicgenService = alternativeMusicgenService;
         this.imageService = imageService;
         this.musicGenService = musicGenService;
         this.songCache = songCache;
@@ -81,7 +82,7 @@ public class SongController {
     @ApiResponse(responseCode = "500", description = "Something failed internally")
     @PostMapping("musicgen")
     public ResponseEntity<Void> createSongMusicGen(@RequestBody CreateSongDto songDto) {
-        musicgenService.generateSong(songDto);
+        alternativeMusicgenService.generateSong(songDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

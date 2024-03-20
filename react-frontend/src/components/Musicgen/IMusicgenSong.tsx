@@ -8,5 +8,5 @@ export interface IMusicgenSong {
     timeSignature: string
     mood: string
     instruments: string[]
-    songUrl: string
+    url: string
 }

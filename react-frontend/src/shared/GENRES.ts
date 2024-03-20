@@ -1,5 +1,6 @@
 export const GENRES = [
     {value: "rock", label: "Rock"},
+    {value: "metal", label: "Metal"},
     {value: "blues", label: "Blues"},
     {value: "pop", label: "Pop"},
     {value: "jazz", label: "Jazz"},

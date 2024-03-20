@@ -2,7 +2,7 @@ package ch.zuehlke.fullstack.hackathon.model.musicgen;
 
 import java.util.Date;
 
-public record MusicgenResponseDto(
+public record MusicgenResponseDto<T>(
         String id,
         String model,
         String version,
@@ -11,6 +11,7 @@ public record MusicgenResponseDto(
         String error,
         String status,
         Date created_at,
-        Urls urls) {
+        Urls urls,
+        T output) {
 
 }

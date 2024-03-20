@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
-public class MusicgenService {
+public class AlternativeMusicgenService {
 
     private final String apiKey;
 
@@ -39,8 +40,9 @@ public class MusicgenService {
 
     private final Map<String, Future<?>> scheduledJobs = new ConcurrentHashMap<>();
 
-    public MusicgenService(@Value("${apiKeyPhil}") String apiKey, SongAndChordService chatGpt,
-                           MusicgenSongCache cache) {
+    public AlternativeMusicgenService(@Value("${apiKeyPhil}") String apiKey,
+                                      SongAndChordService chatGpt,
+                                      MusicgenSongCache cache) {
         this.apiKey = apiKey;
         this.chatGpt = chatGpt;
         this.cache = cache;
@@ -95,7 +97,12 @@ public class MusicgenService {
                                 .urls()
                                 .get()
                                 .toString());
-                cache.updateSong(song, songUrl);
+                var output = pollResponse.output();
+                try {
+                    cache.updateSong(song, new URL((String) output));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, 3, 2, TimeUnit.SECONDS);
         scheduledJobs.put(songUrlString, job);

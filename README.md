@@ -22,13 +22,7 @@ To run, make sure you have provided Key's for both OpenAi and Replicate.
 
 ### Output
 
-<audio controls="controls">
-    <source type="audio/mp3" src="doc/PinkFluffyUnicorns_SongInpaintingBert.mp3">
-</audio>
-
-<audio controls="controls">
-    <source type="audio/mp3" src="doc/PinkFluffyUnicorns_MusicGen.mp3">
-</audio>
-
+* [MusicInpaintingBert Song](doc/PinkFluffyUnicorns_SongInpaintingBert.mp3)
+* [MusicGen Song](doc/PinkFluffyUnicorns_MusicGen.mp3)
 
 ![Result.png](doc/Result.png)

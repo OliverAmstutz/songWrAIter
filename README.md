@@ -18,4 +18,11 @@ To run, make sure you have provided Key's for both OpenAi and Replicate.
 ![Input.png](doc/Input.png)
 
 ### Output
+
+Music-inpainting-bert:
+https://github.com/OliverAmstutz/songWrAIter/assets/25118270/ef74446d-be91-4a73-84ca-6a00bffe5dd6
+
+MusicGen:
+https://github.com/OliverAmstutz/songWrAIter/assets/25118270/48500abe-cfa0-48ca-9a8e-a0be7feb0e66
+
 ![Result.png](doc/Result.png)
